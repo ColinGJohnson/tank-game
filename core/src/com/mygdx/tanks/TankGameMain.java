@@ -8,26 +8,48 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class TankGameMain extends ApplicationAdapter {
 	SpriteBatch batch;
-	Texture img;
+	Texture dirtTile;
+	Texture grassTile;
+    Texture sandTile;
+    Texture greenTankBody;
+    Texture greenTankBarrel;
 	
 	@Override
 	public void create () {
+
+        // sprite batch for drawing textures
 		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
+
+        // load textures from 'android/assets' folder
+        dirtTile = new Texture("Kenny/Environment/dirt.png");
+        grassTile = new Texture("Kenny/Environment/grass.png");
+        sandTile = new Texture("Kenny/Environment/sand.png");
+
+        greenTankBody = new Texture("Kenny/Tanks/tankGreen.png");
+        greenTankBarrel = new Texture("Kenny/Tanks/tankGreen.png");
 	}
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(1, 0, 0, 1);
+
+        // clear entire screen with flat 50% grey
+		Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        // begin drawing images
 		batch.begin();
-		batch.draw(img, 0, 0);
+		batch.draw(dirtTile, 0, 0);
+        batch.draw(greenTankBody, 0, 0);
 		batch.end();
 	}
 	
 	@Override
 	public void dispose () {
 		batch.dispose();
-		img.dispose();
+		dirtTile.dispose();
+        grassTile.dispose();
+        sandTile.dispose();
+        greenTankBody.dispose();
+        greenTankBarrel.dispose();
 	}
 }
