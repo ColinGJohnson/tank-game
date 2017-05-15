@@ -62,17 +62,18 @@ public class TankEntity extends Entity{
         BodyDef def = new BodyDef();
         PolygonShape shape = new PolygonShape();
 
+        // tanks are dynamic (as opposed to static, like walls or bushes)
         def.type = BodyDef.BodyType.DynamicBody;
 
         // set body position to spawn point
         def.position.set(getGameMap().getSpawn().x / Constants.PPM, getGameMap().getSpawn().y / Constants.PPM);
 
         // tank is allowed to rotate
-        def.fixedRotation = false;
+        def.fixedRotation = true;
 
         // tank collisions determined by rectangular hit box
         // NOTE: width & height measured from center
-        shape.setAsBox(32 / 2 / Constants.PPM, 32 / 2 / Constants.PPM);
+        shape.setAsBox(20, 20);
 
         // add new tank body definition to game map
         tankBody = getGameMap().getWorld().createBody(def);
@@ -83,7 +84,7 @@ public class TankEntity extends Entity{
         // attach this entity's unique id to body so it can be identified dyrubg collisions
         tankBody.setUserData(this.getUuid());
 
-        // associate Box2D body body reference in Entity class
+        // associate Box2D body reference in Entity class
         setBody(tankBody);
 
         // dispose of shape definition object to avoid memory leak

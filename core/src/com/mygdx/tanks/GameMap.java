@@ -27,6 +27,12 @@ public class GameMap {
         world = new World(new Vector2(0, 0), false);
     } // GameMap Constructor
 
+    public void update(){
+
+        // update physics
+        world.step(1/60f, 6, 2);
+    }
+
     public World getWorld() {
         return world;
     }

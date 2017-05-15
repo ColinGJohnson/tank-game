@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 
-public class TankGameMain extends Game {
+public class TankGame extends Game {
 
     // cross-platform
     public static PlatformResolver platformResolver = null;
@@ -17,7 +17,7 @@ public class TankGameMain extends Game {
     private OrthographicCamera camera; // orthographic (2D) camera to follow player
 
     // assets
-	private SpriteBatch batch;
+    private SpriteBatch batch;
     private Texture dirtTile;
     private Texture grassTile;
     private Texture sandTile;
@@ -28,12 +28,12 @@ public class TankGameMain extends Game {
     private TiledMap tileMap;
     private GameMap gameMap;
     private PlayerTank playerTank;
-	
-	@Override
-	public void create () {
+
+    @Override
+    public void create () {
 
         // sprite batch for drawing textures
-		batch = new SpriteBatch();
+        batch = new SpriteBatch();
 
         // load textures from 'android/assets' folder
         dirtTile = new Texture("Kenny/Environment/dirt.png");
@@ -49,7 +49,7 @@ public class TankGameMain extends Game {
 
         // create player tank on map
         playerTank = new PlayerTank(gameMap);
-	}
+    }
 
     /**
      * Update all game logic.
@@ -75,21 +75,21 @@ public class TankGameMain extends Game {
      * Render loop called 60 times per second by LibGDX. Calls update() then
      * renders all game grapics.
      */
-	@Override
-	public void render () {
+    @Override
+    public void render () {
 
         // update game logic
         update();
 
         // clear entire screen with flat 50% grey
-		Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         // draw map tiles
-		batch.begin();
-		batch.draw(dirtTile, 0, 0);
+        batch.begin();
+        batch.draw(dirtTile, 0, 0);
         batch.draw(greenTankBody, 0, 0);
-		batch.end();
+        batch.end();
 
         // draw tanks
 
@@ -99,17 +99,17 @@ public class TankGameMain extends Game {
 
         // draw GUI
 
-	}
-	
-	@Override
-	public void dispose () {
-		batch.dispose();
-		dirtTile.dispose();
+    }
+
+    @Override
+    public void dispose () {
+        batch.dispose();
+        dirtTile.dispose();
         grassTile.dispose();
         sandTile.dispose();
         greenTankBody.dispose();
         greenTankBarrel.dispose();
-	}
+    }
 
     public static PlatformResolver getPlatformResolver() {
         return platformResolver;

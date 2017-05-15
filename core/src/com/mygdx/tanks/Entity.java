@@ -34,7 +34,7 @@ public abstract class Entity {
 
         // assign random UUID
         this.setUuid(UUID.randomUUID());
-    }
+    } // Entity Constructor
 
     /**
      * Alternate Entity constructor. Sets all values to defaults.
@@ -46,7 +46,7 @@ public abstract class Entity {
         this.x = 0;
         this.y = 0;
         this.vx = 1;
-    }
+    } // Entity Constructor
 
     /**
      * Every Entity must define its collision bounds.
@@ -108,4 +108,4 @@ public abstract class Entity {
     public void setGameMap(GameMap gameMap) {
         this.gameMap = gameMap;
     }
-}
+} // Entity
