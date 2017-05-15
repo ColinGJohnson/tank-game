@@ -5,4 +5,13 @@ package com.mygdx.tanks;
  * A tank controlled by a player.
  */
 public class PlayerTank extends TankEntity{
-}
+    public static final TankEntity.TankColor PLAYER_COLOR = TankColor.green;
+
+    public PlayerTank(float x, float y, GameMap gameMap){
+        super(x, y, gameMap, PLAYER_COLOR);
+    }
+
+    public void update(){
+
+    }
+} // PlayerTank
