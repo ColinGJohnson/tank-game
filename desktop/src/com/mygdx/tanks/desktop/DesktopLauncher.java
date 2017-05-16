@@ -9,10 +9,11 @@ public class DesktopLauncher {
 	public static void main (String[] arg) {
 
         // set game to desktop mode
-        TankGame.setPlatformResolver(new DesktopResolver());
+        TankGame.platformResolver = new DesktopResolver();
 
         // configure game window
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.resizable = false;
 		config.width = 1280;
 		config.height = 720;
 		config.title = "LibGDX Tank Game";

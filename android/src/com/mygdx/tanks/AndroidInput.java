@@ -1,21 +1,24 @@
 package com.mygdx.tanks;
 
+import com.badlogic.gdx.math.Vector2;
+
 /**
  * Created by colin on 15-May-17.
  */
 public class AndroidInput implements PlatformInput {
+
     @Override
-    public boolean updateInput() {
+    public boolean quit() {
         return false;
     }
 
     @Override
-    public boolean up() {
+    public boolean forward() {
         return false;
     }
 
     @Override
-    public boolean down() {
+    public boolean back() {
         return false;
     }
 
@@ -30,7 +33,12 @@ public class AndroidInput implements PlatformInput {
     }
 
     @Override
-    public boolean target() {
+    public boolean shoot() {
         return false;
+    }
+
+    @Override
+    public Vector2 target() {
+        return null;
     }
 }

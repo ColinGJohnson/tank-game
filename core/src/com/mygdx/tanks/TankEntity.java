@@ -1,6 +1,9 @@
 package com.mygdx.tanks;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -11,8 +14,10 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
  * An entity representing a tank
  */
 public class TankEntity extends Entity{
-    private static final float TANK_SPEED = 1; // speed for tanks (m/s)
+    private static final float TANK_SPEED = 10; // speed for tanks (m/s)
     private TankColor tankColor; //
+    private Sprite gunSprite;
+    private float gunRotation;
 
     // allowable tank colors
     public enum TankColor {
@@ -39,19 +44,76 @@ public class TankEntity extends Entity{
 
         // define the tank's collision bounds
         defineBody();
+
+        // load appropriate gun sprite
+        switch (tankColor) {
+            case beige:
+                setGunSprite(new Sprite(new Texture("Kenny/Tanks/barrelBeige.png")));
+                break;
+            case black:
+                setGunSprite(new Sprite(new Texture("Kenny/Tanks/barrelBlack.png")));
+                break;
+            case blue:
+                setGunSprite(new Sprite(new Texture("Kenny/Tanks/barrelBlue.png")));
+                break;
+            case green:
+                setGunSprite(new Sprite(new Texture("Kenny/Tanks/barrelGreen.png")));
+                break;
+            case red:
+                setGunSprite(new Sprite(new Texture("Kenny/Tanks/barrelRed.png")));
+                break;
+        }
     } // TankEntity Constructor
 
     /**
      * Moves tank according to specified inputs.
-     * @param up Should the tank move up?
-     * @param down Should the tank move down?
+     * @param forward Should the tank move up?
+     * @param back Should the tank move down?
      * @param left Should the tank rotate left?
      * @param right Should the tank rotate right?
      * @param target Point the tank's gun should be facing.
      */
-    public void moveTank(boolean up, boolean down, boolean left, boolean right, Vector2 target){
+    public void moveTank(boolean forward, boolean back, boolean left, boolean right, Vector2 target){
+        float horizontal = 0;
+        float vertical = 0;
 
+        // move tank forwards
+        if (forward){
+            horizontal += getV() * MathUtils.cosDeg(getRotation());
+            vertical += getV() * MathUtils.sinDeg(getRotation());
+        }
+
+        // move tank backwards
+        if (back){
+            horizontal -= getV() * MathUtils.cosDeg(getRotation());
+            vertical -= getV() * MathUtils.sinDeg(getRotation());
+        }
+
+        // rotate tank CCW
+        if (left){
+            setRotation(getRotation() + 1);
+            System.out.println(getRotation());
+        }
+
+        // rotate tank CW
+        if (right){
+            setRotation(getRotation() - 1);
+            System.out.println(getRotation());
+        }
+
+        // aim tank gun
+        rotateGunToPosition(target.x, target.y);
+        getBody().setLinearVelocity(horizontal, vertical);
     } // moveTank
+
+    /**
+     * Rotates this player to face the given world point.
+     * @param targetX The x-coordinate in the world to face.
+     * @param targetY The y-coordinate in the world to face.
+     */
+    public void rotateGunToPosition(float targetX, float targetY){
+        setGunRotation(-(float) Math.toDegrees(Math.atan2(getX() - targetX, getY() - targetY)));
+    } // rotateToPosition
 
     /**
      * Defines a Box2D body to handle collisions with this tank.
@@ -73,7 +135,7 @@ public class TankEntity extends Entity{
 
         // tank collisions determined by rectangular hit box
         // NOTE: width & height measured from center
-        shape.setAsBox(20, 20);
+        shape.setAsBox(75 / 2 / Constants.PPM, 70 / 2 / Constants.PPM);
 
         // add new tank body definition to game map
         tankBody = getGameMap().getWorld().createBody(def);
@@ -97,5 +159,21 @@ public class TankEntity extends Entity{
 
     public void setTankColor(TankColor tankColor) {
         this.tankColor = tankColor;
+    }
+
+    public Sprite getGunSprite() {
+        return gunSprite;
+    }
+
+    public void setGunSprite(Sprite gunSprite) {
+        this.gunSprite = gunSprite;
+    }
+
+    public float getGunRotation() {
+        return gunRotation;
+    }
+
+    public void setGunRotation(float gunRotation) {
+        this.gunRotation = gunRotation;
     }
 } // TankEntity

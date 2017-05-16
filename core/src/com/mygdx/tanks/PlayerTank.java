@@ -15,5 +15,12 @@ public class PlayerTank extends TankEntity{
 
     public void update(){
 
+        // update screen coordinates based on Box2D world
+        setX(getBody().getPosition().x * Constants.PPM - getSprite().getWidth() / 2);
+        setY(getBody().getPosition().y * Constants.PPM - getSprite().getHeight() / 2);
+
+        // update sprite location based on screen coordinates
+        getSprite().setX(getX());
+        getSprite().setY(getY());
     }
 } // PlayerTank
