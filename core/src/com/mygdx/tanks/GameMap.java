@@ -3,6 +3,12 @@ package com.mygdx.tanks;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.ContactImpulse;
+import com.badlogic.gdx.physics.box2d.ContactListener;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
 
 import java.util.ArrayList;
@@ -13,6 +19,8 @@ import java.util.ArrayList;
  */
 public class GameMap {
     private World world; // Box2D world to manage collisions for entities on this map
+    private ContactListener contactListener; // listener which will be called during collisions
+
     private TmxMapLoader mapLoader;
     private TiledMap tiledMap; // tiledMap to define map bounds and graphics locations
     private Vector2 spawn; // starting position for players on this map
@@ -31,6 +39,9 @@ public class GameMap {
 
         // define Box2D world with no gravity in either direction
         world = new World(new Vector2(0, 0), false);
+
+        // define contact listener
+        contactListener();
 
         // create player tank on map
         playerTank = new PlayerTank(this);
@@ -65,6 +76,35 @@ public class GameMap {
         }
         projectiles.removeAll(garbage);
     }
+
+    private void contactListener(){
+        contactListener = new ContactListener() {
+            @Override
+            public void beginContact(Contact contact) {
+                System.out.println("collision");
+                Body a = contact.getFixtureA().getBody();
+                Body b = contact.getFixtureB().getBody();
+
+                if (a.getUserData() instanceof TankEntity && b.getUserData() instanceof ProjectileEntity
+                        || b.getUserData() instanceof TankEntity && a.getUserData() instanceof ProjectileEntity){
+                    if (a.getUserData() instanceof ProjectileEntity){
+                        ((ProjectileEntity) a.getUserData()).setContact((TankEntity)b.getUserData());
+                    } else {
+                        ((ProjectileEntity) b.getUserData()).setContact((TankEntity)a.getUserData());
+                    }
+                }
+            }
+
+            @Override
+            public void endContact(Contact contact) {}
+
+            @Override
+            public void preSolve(Contact contact, Manifold oldManifold) {}
+
+            @Override
+            public void postSolve(Contact contact, ContactImpulse impulse) {}
+        };
+    } // contactListener
 
     public World getWorld() {
         return world;

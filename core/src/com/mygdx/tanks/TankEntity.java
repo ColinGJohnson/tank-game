@@ -102,7 +102,6 @@ public class TankEntity extends Entity{
 
         // shoot
         if (shoot){
-            System.out.println("shoot");
             getGameMap().getProjectiles().add(new ProjectileEntity(getX(), getY(), this, getGameMap()));
         }
 

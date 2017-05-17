@@ -123,11 +123,18 @@ public class TankGame extends Game {
         // draw player tank
         gameMap.playerTank.getSprite().draw(batch);
         gameMap.playerTank.getGunSprite().draw(batch);
-        batch.end();
+
 
         // draw bot tanks
+        for (BotTank botTank : gameMap.getBots()){
+            botTank.getSprite().draw(batch);
+        }
 
         // draw projectiles
+        for(ProjectileEntity projectileEntity: gameMap.getProjectiles()){
+            projectileEntity.getSprite().draw(batch);
+        }
+        batch.end();
 
         // draw effects
 
@@ -135,7 +142,7 @@ public class TankGame extends Game {
 
         // render box2d debug graphics
         if(debug)box2DDebugRenderer.render(gameMap.getWorld(), camera.combined.scl(Constants.PPM));
-    }
+    } // render
 
     @Override
     public void dispose () {
@@ -145,18 +152,19 @@ public class TankGame extends Game {
         sandTile.dispose();
         greenTankBody.dispose();
         greenTankBarrel.dispose();
-    }
+        gameMap.getWorld().dispose();
+    } // dispose
 
     @Override
     public void resize(int width, int height){
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-    }
+    } // resize
 
     public static PlatformResolver getPlatformResolver() {
         return platformResolver;
-    }
+    } // getPlatformResolver
 
     public static void setPlatformResolver(PlatformResolver platformResolver) {
         platformResolver = platformResolver;
-    }
-}
+    } // setPlatformResolver
+} // TankGame
