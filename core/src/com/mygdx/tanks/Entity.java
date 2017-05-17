@@ -109,8 +109,14 @@ public abstract class Entity {
     }
 
     public void setRotation(float rotation) {
+
+        // set rotation tracking variable
         this.rotation = rotation;
+
+        // rotate this entity's sprite
         sprite.setRotation(rotation - 90);
+
+        // rotate this entity's hit box
         getBody().setTransform(getBody().getWorldCenter(), (float) Math.toRadians(getRotation()));
     }
 

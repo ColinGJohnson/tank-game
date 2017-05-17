@@ -1,7 +1,5 @@
 package com.mygdx.tanks;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Vector2;
@@ -18,8 +16,10 @@ public class GameMap {
     private TmxMapLoader mapLoader;
     private TiledMap tiledMap; // tiledMap to define map bounds and graphics locations
     private Vector2 spawn; // starting position for players on this map
-    private ArrayList<BotTank> bots = new ArrayList<BotTank>();
-    public PlayerTank playerTank;
+
+    private ArrayList<BotTank> bots = new ArrayList<BotTank>(); // computer controlled tanks on map
+    private ArrayList<ProjectileEntity> projectiles = new ArrayList<ProjectileEntity>(); // projectiles
+    public PlayerTank playerTank; // reference to player tank object
 
     /**
      * GameMap constructor.
@@ -34,7 +34,6 @@ public class GameMap {
 
         // create player tank on map
         playerTank = new PlayerTank(this);
-        playerTank.setSprite(new Sprite(new Texture("Kenny/Tanks/tankGreen.png")));
 
         // load map file
         mapLoader = new TmxMapLoader();
@@ -46,6 +45,25 @@ public class GameMap {
 
         // update Box2D physics
         world.step(1/60f, 6, 2);
+
+        // update bots and remove dead ones
+        ArrayList<Object> garbage = new ArrayList<Object>();
+        for (BotTank bot : bots){
+            bot.update();
+            if (bot.isDestroyed()){
+                garbage.add(bot);
+            }
+        }
+        bots.removeAll(garbage);
+
+        // update projectiles and remove spent ones
+        for (ProjectileEntity projectile : projectiles) {
+            projectile.update();
+            if (projectile.isUsed()){
+                garbage.add(projectile);
+            }
+        }
+        projectiles.removeAll(garbage);
     }
 
     public World getWorld() {
@@ -70,5 +88,21 @@ public class GameMap {
 
     public void setSpawn(Vector2 spawn) {
         this.spawn = spawn;
+    }
+
+    public ArrayList<BotTank> getBots() {
+        return bots;
+    }
+
+    public void setBots(ArrayList<BotTank> bots) {
+        this.bots = bots;
+    }
+
+    public ArrayList<ProjectileEntity> getProjectiles() {
+        return projectiles;
+    }
+
+    public void setProjectiles(ArrayList<ProjectileEntity> projectiles) {
+        this.projectiles = projectiles;
     }
 } // GameMap

@@ -13,12 +13,13 @@ public class DesktopLauncher {
 
         // configure game window
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.width = 800;
+		config.height = 800;
+		config.fullscreen = false;
 		config.resizable = false;
-		config.width = 1280;
-		config.height = 720;
 		config.title = "LibGDX Tank Game";
 
         // create new game instance with window configuration
 		new LwjglApplication(new TankGame(), config);
-	}
-}
+	} // main method
+} // Desktop Launcher

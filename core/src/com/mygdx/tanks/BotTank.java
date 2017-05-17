@@ -18,6 +18,13 @@ public class BotTank extends TankEntity{
         hard
     }
 
+    /**
+     * Constructs a new BotTank.
+     * @param x The X-Position of this bot.
+     * @param y The Y-Position of this bot.
+     * @param gameMap The map this bot is on.
+     * @param difficulty The difficulty rating of this bot.
+     */
     public BotTank(float x, float y, GameMap gameMap, BotDifficulty difficulty){
         super(x, y, gameMap, TankColor.blue);
 
@@ -48,4 +55,11 @@ public class BotTank extends TankEntity{
                 setSprite(new Sprite(new Texture("Kenny/Tanks/tankBlue.png")));
         }
     } // BotTank Constructor
+
+    /**
+     *  Makes this bot do tank-ey stuff: move, shoot and look around.
+     */
+    public void update(){
+
+    }
 } // BotTank

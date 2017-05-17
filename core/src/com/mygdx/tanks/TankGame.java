@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 
 public class TankGame extends Game {
@@ -57,11 +58,11 @@ public class TankGame extends Game {
         batch.setProjectionMatrix(camera.combined);
 
         // load textures from 'android/assets' folder
-        dirtTile = new Texture("Kenny/Environment/dirt.png");
-        grassTile = new Texture("Kenny/Environment/grass.png");
-        sandTile = new Texture("Kenny/Environment/sand.png");
-        greenTankBody = new Texture("Kenny/Tanks/tankGreen.png");
-        greenTankBarrel = new Texture("Kenny/Tanks/tankGreen.png");
+        dirtTile = new Texture("Kenney/Environment/dirt.png");
+        grassTile = new Texture("Kenney/Environment/grass.png");
+        sandTile = new Texture("Kenney/Environment/sand.png");
+        greenTankBody = new Texture("Kenney/Tanks/tankGreen.png");
+        greenTankBarrel = new Texture("Kenney/Tanks/tankGreen.png");
     }
 
     /**
@@ -93,7 +94,8 @@ public class TankGame extends Game {
         }
 
         // player input
-        gameMap.playerTank.moveTank(input.forward(), input.back(), input.left(), input.right(), input.target());
+        Vector3 targetUnproject = camera.unproject(new Vector3(input.target().x, input.target().y, 0));
+        gameMap.playerTank.moveTank(input.forward(), input.back(), input.left(), input.right(), input.shoot(), targetUnproject);
     } // updateInput
 
     /**
@@ -120,6 +122,7 @@ public class TankGame extends Game {
 
         // draw player tank
         gameMap.playerTank.getSprite().draw(batch);
+        gameMap.playerTank.getGunSprite().draw(batch);
         batch.end();
 
         // draw bot tanks
