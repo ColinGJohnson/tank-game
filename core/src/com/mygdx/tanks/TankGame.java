@@ -56,13 +56,6 @@ public class TankGame extends Game {
         // sprite batch for drawing textures
         batch = new SpriteBatch();
         batch.setProjectionMatrix(camera.combined);
-
-        // load textures from 'android/assets' folder
-        dirtTile = new Texture("Kenney/Environment/dirt.png");
-        grassTile = new Texture("Kenney/Environment/grass.png");
-        sandTile = new Texture("Kenney/Environment/sand.png");
-        greenTankBody = new Texture("Kenney/Tanks/tankGreen.png");
-        greenTankBarrel = new Texture("Kenney/Tanks/tankGreen.png");
     }
 
     /**
@@ -120,6 +113,11 @@ public class TankGame extends Game {
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
 
+        // draw projectiles
+        for(ProjectileEntity projectileEntity: gameMap.getProjectiles()){
+            projectileEntity.getSprite().draw(batch);
+        }
+
         // draw player tank
         gameMap.playerTank.getSprite().draw(batch);
         gameMap.playerTank.getGunSprite().draw(batch);
@@ -130,10 +128,6 @@ public class TankGame extends Game {
             botTank.getSprite().draw(batch);
         }
 
-        // draw projectiles
-        for(ProjectileEntity projectileEntity: gameMap.getProjectiles()){
-            projectileEntity.getSprite().draw(batch);
-        }
         batch.end();
 
         // draw effects

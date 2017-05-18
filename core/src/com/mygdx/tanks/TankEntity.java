@@ -14,10 +14,13 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
  */
 public class TankEntity extends Entity{
     private static final float TANK_SPEED = 10; // speed for tanks (m/s)
+    private static final int FIRING_DELAY = 400; // delay between shots (ms)
+
     private TankColor tankColor; // enum representing the color of this tank
     private Sprite gunSprite;
     private float gunRotation;
 
+    private long lastShot = 0; // system time in milliseconds that this tank last shot
     private boolean destroyed = false; // has this tank been shot?
 
     // allowable tank colors
@@ -43,28 +46,49 @@ public class TankEntity extends Entity{
         // set tank color
         this.tankColor = tankColor;
 
-        // define the tank's collision bounds
-        defineBody();
-
-        // load appropriate gun sprite
+        // load appropriate gun sprite and tank sprite
         switch (tankColor) {
             case beige:
                 setGunSprite(new Sprite(new Texture("Kenney/Tanks/barrelBeige.png")));
+                setSprite(new Sprite(new Texture("Kenney/Tanks/tankBeige.png")));
                 break;
             case black:
                 setGunSprite(new Sprite(new Texture("Kenney/Tanks/barrelBlack.png")));
+                setSprite(new Sprite(new Texture("Kenney/Tanks/tankBlack.png")));
                 break;
             case blue:
                 setGunSprite(new Sprite(new Texture("Kenney/Tanks/barrelBlue.png")));
+                setSprite(new Sprite(new Texture("Kenney/Tanks/tankBlue.png")));
                 break;
             case green:
                 setGunSprite(new Sprite(new Texture("Kenney/Tanks/barrelGreen.png")));
+                setSprite(new Sprite(new Texture("Kenney/Tanks/tankGreen.png")));
                 break;
             case red:
                 setGunSprite(new Sprite(new Texture("Kenney/Tanks/barrelRed.png")));
+                setSprite(new Sprite(new Texture("Kenney/Tanks/tankRed.png")));
                 break;
         }
+
+        // define the tank's collision bounds
+        defineBody();
     } // TankEntity Constructor
+
+    public void update(){
+
+        // update screen coordinates based on Box2D world
+        setX(getBody().getPosition().x * Constants.PPM - getSprite().getWidth() / 2);
+        setY(getBody().getPosition().y * Constants.PPM - getSprite().getHeight() / 2);
+
+        // update sprite location based on screen coordinates
+        getSprite().setX(getX());
+        getSprite().setY(getY());
+
+        // update gun sprite location and rotation origin
+        getGunSprite().setX(getX() + getSprite().getWidth() / 2 - getGunSprite().getWidth() / 2);
+        getGunSprite().setY(getY() + getSprite().getHeight() / 2 + 10);
+        getGunSprite().setOrigin(getGunSprite().getWidth() / 2, - 10);
+    } // update
 
     /**
      * Moves tank according to specified inputs.
@@ -101,8 +125,9 @@ public class TankEntity extends Entity{
         }
 
         // shoot
-        if (shoot){
-            getGameMap().getProjectiles().add(new ProjectileEntity(getX(), getY(), this, getGameMap()));
+        if (shoot && lastShot + FIRING_DELAY < System.currentTimeMillis()){
+            lastShot = System.currentTimeMillis();
+            getGameMap().getProjectiles().add(new ProjectileEntity(this, getGameMap()));
         }
 
         // aim tank gun
@@ -116,8 +141,8 @@ public class TankEntity extends Entity{
      * @param targetY The y-coordinate in the world to face.
      */
     public void rotateGunToPosition(float targetX, float targetY){
-        setGunRotation((float)(-Math.toDegrees(Math.atan2((getX() + getSprite().getWidth() / 2) - targetX, (getY() + getSprite().getHeight() / 2) - targetY))) + 180);
-    } // rotateToPosition
+        setGunRotation((float)( -Math.toDegrees(Math.atan2((getX() + getSprite().getWidth() / 2) - targetX, (getY() + getSprite().getHeight() / 2) - targetY))) + 180);
+    } // rotateGunToPosition
 
     /**
      * Defines a Box2D body to handle collisions with this tank.
@@ -134,12 +159,12 @@ public class TankEntity extends Entity{
         // set body position to spawn point
         def.position.set(getGameMap().getSpawn().x / Constants.PPM, getGameMap().getSpawn().y / Constants.PPM);
 
-        // tank is allowed to rotate
+        // tank is not allowed to rotate on its own
         def.fixedRotation = true;
 
         // tank collisions determined by rectangular hit box
         // NOTE: width & height measured from center
-        shape.setAsBox(75 / 2 / Constants.PPM, 70 / 2 / Constants.PPM);
+        shape.setAsBox(getSprite().getWidth() / 2 / Constants.PPM, getSprite().getHeight() / 2 / Constants.PPM);
 
         // add new tank body definition to game map
         tankBody = getGameMap().getWorld().createBody(def);
@@ -180,7 +205,7 @@ public class TankEntity extends Entity{
     public void setGunRotation(float gunRotation) {
         this.gunRotation = gunRotation;
         gunSprite.setRotation(gunRotation);
-    }
+    } // setGunRotation
 
     public boolean isDestroyed() {
         return destroyed;
