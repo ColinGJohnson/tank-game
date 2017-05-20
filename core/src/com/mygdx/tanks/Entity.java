@@ -1,6 +1,5 @@
 package com.mygdx.tanks;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.Body;
 
@@ -113,11 +112,11 @@ public abstract class Entity {
         // set rotation tracking variable
         this.rotation = rotation;
 
-        // rotate this entity's sprite
+        // rotate this entity's sprites
         sprite.setRotation(rotation - 90);
 
         // rotate this entity's hit box
-        getBody().setTransform(getBody().getWorldCenter(), (float) Math.toRadians(getRotation()));
+        getBody().setTransform(getBody().getWorldCenter(), (float) Math.toRadians(getRotation() - 90));
     }
 
     public GameMap getGameMap() {

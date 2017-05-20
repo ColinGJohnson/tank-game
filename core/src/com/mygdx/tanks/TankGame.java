@@ -3,6 +3,7 @@ package com.mygdx.tanks;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -24,18 +25,14 @@ public class TankGame extends Game {
     private Box2DDebugRenderer box2DDebugRenderer;
 
     // assets
-    private Texture dirtTile;
-    private Texture grassTile;
-    private Texture sandTile;
-    private Texture greenTankBody;
-    private Texture greenTankBarrel;
+    AssetManager assets = new AssetManager();
 
     // logic
     private TiledMap tileMap;
     private GameMap gameMap;
 
     // debug
-    public static boolean debug = true;
+    public static boolean debug = false;
 
     @Override
     public void create () {
@@ -128,11 +125,8 @@ public class TankGame extends Game {
             botTank.getSprite().draw(batch);
         }
 
+        // end drawing with SpriteBatch
         batch.end();
-
-        // draw effects
-
-        // draw GUI
 
         // render box2d debug graphics
         if(debug)box2DDebugRenderer.render(gameMap.getWorld(), camera.combined.scl(Constants.PPM));
@@ -140,12 +134,8 @@ public class TankGame extends Game {
 
     @Override
     public void dispose () {
+        //TODO: Dispose sprites
         batch.dispose();
-        dirtTile.dispose();
-        grassTile.dispose();
-        sandTile.dispose();
-        greenTankBody.dispose();
-        greenTankBarrel.dispose();
         gameMap.getWorld().dispose();
     } // dispose
 

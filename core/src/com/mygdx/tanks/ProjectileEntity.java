@@ -3,37 +3,24 @@ package com.mygdx.tanks;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.Contact;
-import com.badlogic.gdx.physics.box2d.ContactImpulse;
-import com.badlogic.gdx.physics.box2d.ContactListener;
-import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
-
-import java.util.ArrayList;
 
 /**
  * Created by colin on 16-May-17.
  */
 public class ProjectileEntity extends Entity{
-    public static final float PROJECTILE_SPEED = 15; // speed for projectiles (m/s)
+    public static final float PROJECTILE_SPEED = 25; // speed for projectiles (m/s)
 
     private TankEntity source;
     private boolean used = false; // true if this projectile has been used already
     private Entity contact = null; //
 
-    private ArrayList<Sprite> treadSprites = new ArrayList<Sprite>(); // tread marks from this tank
-
-
     public ProjectileEntity(TankEntity source, GameMap gameMap) {
-        super(source.getX() - 20, source.getY() - 20, PROJECTILE_SPEED, gameMap);
+        super(0, 0, PROJECTILE_SPEED, gameMap);
         this.source = source;
-
-        // calculate starting position
-        float tankCenterX = source.getX() + source.getSprite().getWidth()/2;
-        float tankCenterY = source.getY() + source.getSprite().getHeight()/2;
-        float shotDistance = 30; // px from tank center to start
 
         // set sprite for this projectile
         setSprite(new Sprite(new Texture("Kenney/Bullets/bulletSilver.png")));
@@ -44,6 +31,14 @@ public class ProjectileEntity extends Entity{
         // set rotation of sprite and body to match gun barrel
         setRotation(source.getGunRotation() + 90);
     } // ProjectileEntity Constructor
+
+    private Vector2 getStartPos(){
+        Vector2 startPos = new Vector2(source.getX() - 20, source.getY() - 20);
+        float spawnDistance = source.getSprite().getWidth() / Constants.PPM;
+        startPos.x = (source.getBody().getPosition().x + spawnDistance * MathUtils.cosDeg(source.getGunRotation() + 90));
+        startPos.y = (source.getBody().getPosition().y + spawnDistance * MathUtils.sinDeg(source.getGunRotation() + 90));
+        return startPos;
+    } // getStartPos
 
     private void collision(){
         System.out.println("collision");
@@ -62,15 +57,6 @@ public class ProjectileEntity extends Entity{
         vertical += getV() * MathUtils.sinDeg(getSprite().getRotation() + 90);
         getBody().setLinearVelocity(horizontal, vertical);
 
-        // projectiles may only deal damage once and contact has to have occurred to deal damage
-        if(!used && contact != null){
-
-            // check that the contacted tank is not the tank that shot the projectile
-            if (contact.getUuid() != getUuid()){
-
-            }
-        }
-
         // remove if too far away
         if (getX() > 10000 || getX() < - 10000 || getY() > 10000 || getY() < - 10000){
             used  = true;
@@ -81,8 +67,8 @@ public class ProjectileEntity extends Entity{
         setY(getBody().getPosition().y * Constants.PPM);
 
         // update sprite position
-        getSprite().setX(getX());
-        getSprite().setY(getY());
+        getSprite().setX(getX() - getSprite().getWidth() / 2);
+        getSprite().setY(getY() - getSprite().getHeight() / 2);
     } // update
 
     /**
@@ -97,7 +83,7 @@ public class ProjectileEntity extends Entity{
         def.type = BodyDef.BodyType.DynamicBody;
 
         // set body position to tank position
-        def.position.set((source.getX() - 30) / Constants.PPM, (source.getY() - 30) / Constants.PPM);
+        def.position.set(getStartPos());
 
         // tank is allowed to rotate
         def.fixedRotation = true;
@@ -113,7 +99,7 @@ public class ProjectileEntity extends Entity{
         projectileBody.createFixture(shape, 1.0f);
 
         // attach this entity's unique id to body so it can be identified during collisions
-        projectileBody.setUserData(this.getUuid());
+        projectileBody.setUserData(this);
 
         // associate Box2D body reference in Entity class
         setBody(projectileBody);

@@ -8,6 +8,8 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 
+import java.util.ArrayList;
+
 /**
  * Created by colin on 14-May-17.
  * An entity representing a tank
@@ -22,6 +24,8 @@ public class TankEntity extends Entity{
 
     private long lastShot = 0; // system time in milliseconds that this tank last shot
     private boolean destroyed = false; // has this tank been shot?
+
+    private ArrayList<Sprite> treadSprites = new ArrayList<Sprite>(); // tread marks from this tank
 
     // allowable tank colors
     public enum TankColor {
@@ -173,7 +177,7 @@ public class TankEntity extends Entity{
         tankBody.createFixture(shape, 1.0f);
 
         // attach this entity's unique id to body so it can be identified during collisions
-        tankBody.setUserData(this.getUuid());
+        tankBody.setUserData(this);
 
         // associate Box2D body reference in Entity class
         setBody(tankBody);
