@@ -32,7 +32,7 @@ public class TankGame extends Game {
     private GameMap gameMap;
 
     // debug
-    public static boolean debug = false;
+    public static boolean debug = true;
 
     @Override
     public void create () {
@@ -53,6 +53,9 @@ public class TankGame extends Game {
         // sprite batch for drawing textures
         batch = new SpriteBatch();
         batch.setProjectionMatrix(camera.combined);
+
+        // add bot tank
+        gameMap.getBots().add(new BotTank(gameMap.getSpawn().x, gameMap.getSpawn().y, gameMap, BotTank.BotDifficulty.easy));
     }
 
     /**
@@ -62,9 +65,6 @@ public class TankGame extends Game {
 
         // update map
         gameMap.update();
-
-        // update player
-        gameMap.playerTank.update();
 
         // process user input
         updateInput();
@@ -118,7 +118,6 @@ public class TankGame extends Game {
         // draw player tank
         gameMap.playerTank.getSprite().draw(batch);
         gameMap.playerTank.getGunSprite().draw(batch);
-
 
         // draw bot tanks
         for (BotTank botTank : gameMap.getBots()){

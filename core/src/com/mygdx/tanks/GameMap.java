@@ -35,7 +35,7 @@ public class GameMap {
     public GameMap(){
 
         // set spawn point for map
-        spawn = new Vector2(1000, 1000);
+        spawn = new Vector2(1200, 1200);
 
         // define Box2D world with no gravity in either direction
         world = new World(new Vector2(0, 0), false);
@@ -74,6 +74,10 @@ public class GameMap {
                 garbage.add(projectile);
             }
         }
+
+        // update player
+        playerTank.update();
+
         projectiles.removeAll(garbage);
     }
 

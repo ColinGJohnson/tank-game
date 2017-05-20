@@ -35,31 +35,19 @@ public class BotTank extends TankEntity{
         switch (difficulty){
             case stationary:
                 setTankColor(TankColor.blue);
-                setSprite(new Sprite(new Texture("Kenny/Tanks/tankBlue.png")));
                 break;
             case easy:
                 setTankColor(TankColor.beige);
-                setSprite(new Sprite(new Texture("Kenny/Tanks/tankBeige.png")));
                 break;
             case medium:
                 setTankColor(TankColor.black);
-                setSprite(new Sprite(new Texture("Kenny/Tanks/tankBlack.png")));
                 break;
             case hard:
                 setTankColor(TankColor.red);
-                setSprite(new Sprite(new Texture("Kenny/Tanks/tankRed.png")));
                 break;
             default:
                 difficulty = BotDifficulty.easy;
                 setTankColor(TankColor.blue);
-                setSprite(new Sprite(new Texture("Kenny/Tanks/tankBlue.png")));
         }
     } // BotTank Constructor
-
-    /**
-     *  Makes this bot do tank-ey stuff: move, shoot and look around.
-     */
-    public void update(){
-
-    }
 } // BotTank

@@ -51,28 +51,7 @@ public class TankEntity extends Entity{
         this.tankColor = tankColor;
 
         // load appropriate gun sprite and tank sprite
-        switch (tankColor) {
-            case beige:
-                setGunSprite(new Sprite(new Texture("Kenney/Tanks/barrelBeige.png")));
-                setSprite(new Sprite(new Texture("Kenney/Tanks/tankBeige.png")));
-                break;
-            case black:
-                setGunSprite(new Sprite(new Texture("Kenney/Tanks/barrelBlack.png")));
-                setSprite(new Sprite(new Texture("Kenney/Tanks/tankBlack.png")));
-                break;
-            case blue:
-                setGunSprite(new Sprite(new Texture("Kenney/Tanks/barrelBlue.png")));
-                setSprite(new Sprite(new Texture("Kenney/Tanks/tankBlue.png")));
-                break;
-            case green:
-                setGunSprite(new Sprite(new Texture("Kenney/Tanks/barrelGreen.png")));
-                setSprite(new Sprite(new Texture("Kenney/Tanks/tankGreen.png")));
-                break;
-            case red:
-                setGunSprite(new Sprite(new Texture("Kenney/Tanks/barrelRed.png")));
-                setSprite(new Sprite(new Texture("Kenney/Tanks/tankRed.png")));
-                break;
-        }
+        setTankColor(tankColor);
 
         // define the tank's collision bounds
         defineBody();
@@ -118,15 +97,24 @@ public class TankEntity extends Entity{
             vertical -= getV() * MathUtils.sinDeg(getRotation());
         }
 
+        // apply tank movement to physics body
+        getBody().setLinearVelocity(horizontal, vertical);
+
         // rotate tank CCW
         if (left){
             setRotation(getRotation() + 1);
         }
 
+        float CW = 0;
+        float CCW = 0;
+
         // rotate tank CW
         if (right){
             setRotation(getRotation() - 1);
         }
+
+        // apply tank rotation to physics body
+
 
         // shoot
         if (shoot && lastShot + FIRING_DELAY < System.currentTimeMillis()){
@@ -136,7 +124,6 @@ public class TankEntity extends Entity{
 
         // aim tank gun
         rotateGunToPosition(target.x, target.y);
-        getBody().setLinearVelocity(horizontal, vertical);
     } // moveTank
 
     /**
@@ -163,8 +150,14 @@ public class TankEntity extends Entity{
         // set body position to spawn point
         def.position.set(getGameMap().getSpawn().x / Constants.PPM, getGameMap().getSpawn().y / Constants.PPM);
 
-        // tank is not allowed to rotate on its own
-        def.fixedRotation = true;
+        // tank is allowed to rotate on its own
+        def.fixedRotation = false;
+
+        // set friction with ground so tank will not slide forever
+        def.linearDamping = 5f;
+
+        // set angular dampening so tank will not spin forever
+        def.angularDamping = 5f;
 
         // tank collisions determined by rectangular hit box
         // NOTE: width & height measured from center
@@ -192,7 +185,34 @@ public class TankEntity extends Entity{
 
     public void setTankColor(TankColor tankColor) {
         this.tankColor = tankColor;
-    }
+
+        switch (tankColor) {
+            case beige:
+                setGunSprite(new Sprite(new Texture("Kenney/Tanks/barrelBeige.png")));
+                setSprite(new Sprite(new Texture("Kenney/Tanks/tankBeige.png")));
+                break;
+            case black:
+                setGunSprite(new Sprite(new Texture("Kenney/Tanks/barrelBlack.png")));
+                setSprite(new Sprite(new Texture("Kenney/Tanks/tankBlack.png")));
+                break;
+            case blue:
+                setGunSprite(new Sprite(new Texture("Kenney/Tanks/barrelBlue.png")));
+                setSprite(new Sprite(new Texture("Kenney/Tanks/tankBlue.png")));
+                break;
+            case green:
+                setGunSprite(new Sprite(new Texture("Kenney/Tanks/barrelGreen.png")));
+                setSprite(new Sprite(new Texture("Kenney/Tanks/tankGreen.png")));
+                break;
+            case red:
+                setGunSprite(new Sprite(new Texture("Kenney/Tanks/barrelRed.png")));
+                setSprite(new Sprite(new Texture("Kenney/Tanks/tankRed.png")));
+                break;
+            default:
+                setGunSprite(new Sprite(new Texture("Kenney/Tanks/barrelBeige.png")));
+                setSprite(new Sprite(new Texture("Kenney/Tanks/tankBeige.png")));
+                break;
+        }
+    } // setTankColor
 
     public Sprite getGunSprite() {
         return gunSprite;

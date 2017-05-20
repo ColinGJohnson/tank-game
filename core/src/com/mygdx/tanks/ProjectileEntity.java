@@ -12,7 +12,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
  * Created by colin on 16-May-17.
  */
 public class ProjectileEntity extends Entity{
-    public static final float PROJECTILE_SPEED = 25; // speed for projectiles (m/s)
+    public static final float PROJECTILE_SPEED = 12; // speed for projectiles (m/s)
 
     private TankEntity source;
     private boolean used = false; // true if this projectile has been used already
@@ -23,7 +23,7 @@ public class ProjectileEntity extends Entity{
         this.source = source;
 
         // set sprite for this projectile
-        setSprite(new Sprite(new Texture("Kenney/Bullets/bulletSilver.png")));
+        setSprite(new Sprite(new Texture("Kenney/Bullets/bulletSilverSilver.png")));
 
         // define collision bounds for this projectile
         defineBody();
