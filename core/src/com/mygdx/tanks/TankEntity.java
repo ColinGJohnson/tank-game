@@ -15,7 +15,7 @@ import java.util.ArrayList;
  * An entity representing a tank
  */
 public class TankEntity extends Entity{
-    private static final float TANK_SPEED = 10; // speed for tanks (m/s)
+    private static final float TANK_SPEED = 1; // speed for tanks
     private static final int FIRING_DELAY = 400; // delay between shots (ms)
 
     private TankColor tankColor; // enum representing the color of this tank
@@ -63,6 +63,9 @@ public class TankEntity extends Entity{
         setX(getBody().getPosition().x * Constants.PPM - getSprite().getWidth() / 2);
         setY(getBody().getPosition().y * Constants.PPM - getSprite().getHeight() / 2);
 
+        // update sprite rotation based on Box2D world
+        setRotation((float)(getBody().getAngle() * 180 / Math.PI));
+
         // update sprite location based on screen coordinates
         getSprite().setX(getX());
         getSprite().setY(getY());
@@ -98,23 +101,24 @@ public class TankEntity extends Entity{
         }
 
         // apply tank movement to physics body
-        getBody().setLinearVelocity(horizontal, vertical);
+        getBody().setLinearVelocity(getBody().getLinearVelocity().x + horizontal, getBody().getLinearVelocity().y + vertical);
+
+        float rotation = 0;
 
         // rotate tank CCW
         if (left){
-            setRotation(getRotation() + 1);
+            //setRotation(getRotation() + 1);
+            rotation += 0.25;
         }
-
-        float CW = 0;
-        float CCW = 0;
 
         // rotate tank CW
         if (right){
-            setRotation(getRotation() - 1);
+            //setRotation(getRotation() - 1);
+            rotation -= 0.25;
         }
 
         // apply tank rotation to physics body
-
+        getBody().setAngularVelocity(getBody().getAngularVelocity() + rotation);
 
         // shoot
         if (shoot && lastShot + FIRING_DELAY < System.currentTimeMillis()){
@@ -154,14 +158,14 @@ public class TankEntity extends Entity{
         def.fixedRotation = false;
 
         // set friction with ground so tank will not slide forever
-        def.linearDamping = 5f;
+        def.linearDamping = 10f;
 
         // set angular dampening so tank will not spin forever
-        def.angularDamping = 5f;
+        def.angularDamping = 10f;
 
         // tank collisions determined by rectangular hit box
         // NOTE: width & height measured from center
-        shape.setAsBox(getSprite().getWidth() / 2 / Constants.PPM, getSprite().getHeight() / 2 / Constants.PPM);
+        shape.setAsBox(getSprite().getHeight() / 2 / Constants.PPM, getSprite().getWidth() / 2 / Constants.PPM);
 
         // add new tank body definition to game map
         tankBody = getGameMap().getWorld().createBody(def);

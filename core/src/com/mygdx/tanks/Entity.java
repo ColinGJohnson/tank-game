@@ -13,7 +13,7 @@ public abstract class Entity {
     private float rotation; // rotation of entity
     private float x; // X-Position of entity
     private float y; // Y-Position of entity
-    private float v; // max speed of entity
+    private float v; // speed of entity
     private Body body; // box2D body for collisions
     private GameMap gameMap; // map this entity is defined on
     private UUID uuid; // unique id for entity identification
@@ -32,7 +32,7 @@ public abstract class Entity {
         this.gameMap = gameMap;
 
         // initialize variables
-        rotation = 90;
+        rotation = 0;
 
         // assign random UUID
         this.setUuid(UUID.randomUUID());
@@ -116,7 +116,7 @@ public abstract class Entity {
         sprite.setRotation(rotation - 90);
 
         // rotate this entity's hit box
-        getBody().setTransform(getBody().getWorldCenter(), (float) Math.toRadians(getRotation() - 90));
+        //getBody().setTransform(getBody().getWorldCenter(), (float) Math.toRadians(getRotation() - 90));
     }
 
     public GameMap getGameMap() {

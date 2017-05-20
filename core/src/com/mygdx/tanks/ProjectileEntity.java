@@ -96,7 +96,7 @@ public class ProjectileEntity extends Entity{
         projectileBody = getGameMap().getWorld().createBody(def);
 
         // fix rectangular shape to body
-        projectileBody.createFixture(shape, 1.0f);
+        projectileBody.createFixture(shape, 10.0f);
 
         // attach this entity's unique id to body so it can be identified during collisions
         projectileBody.setUserData(this);
