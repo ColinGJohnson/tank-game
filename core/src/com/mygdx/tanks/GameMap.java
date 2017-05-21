@@ -149,4 +149,12 @@ public class GameMap {
     public void setProjectiles(ArrayList<ProjectileEntity> projectiles) {
         this.projectiles = projectiles;
     }
+
+    public PlayerTank getPlayerTank() {
+        return playerTank;
+    }
+
+    public void setPlayerTank(PlayerTank playerTank) {
+        this.playerTank = playerTank;
+    }
 } // GameMap

@@ -50,4 +50,16 @@ public class BotTank extends TankEntity{
                 setTankColor(TankColor.blue);
         }
     } // BotTank Constructor
+
+    public void update() {
+
+        // call update method in TankEntity class
+        super.update();
+
+        // create reference to target tank
+        TankEntity target = getGameMap().getPlayerTank();
+
+        // rotate gun to face target tankEntity
+        rotateGunToPosition(target.getX() + target.getSprite().getWidth() / 2, target.getY() + target.getSprite().getHeight() / 2);
+    }
 } // BotTank

@@ -25,11 +25,11 @@ public class ProjectileEntity extends Entity{
         // set sprite for this projectile
         setSprite(new Sprite(new Texture("Kenney/Bullets/bulletSilverSilver.png")));
 
-        // define collision bounds for this projectile
-        defineBody();
-
         // set rotation of sprite and body to match gun barrel
         setRotation(source.getGunRotation() + 90);
+
+        // define collision bounds for this projectile
+        defineBody();
     } // ProjectileEntity Constructor
 
     private Vector2 getStartPos(){
@@ -79,16 +79,16 @@ public class ProjectileEntity extends Entity{
         BodyDef def = new BodyDef();
         PolygonShape shape = new PolygonShape();
 
-        // tanks are dynamic (as opposed to static, like walls or bushes)
+        // projectiles are dynamic (as opposed to static, like walls or bushes)
         def.type = BodyDef.BodyType.DynamicBody;
 
         // set body position to tank position
         def.position.set(getStartPos());
 
-        // tank is allowed to rotate
+        // projectile is allowed to rotate
         def.fixedRotation = true;
 
-        // tank collisions determined by rectangular hit box
+        // projectile collisions determined by rectangular hit box
         // NOTE: width & height measured from center
         shape.setAsBox(getSprite().getWidth() / 2 / Constants.PPM, getSprite().getHeight() / 2 / Constants.PPM);
 
@@ -105,7 +105,7 @@ public class ProjectileEntity extends Entity{
         setBody(projectileBody);
 
         // rotate box to match sprite
-        getBody().setTransform(getBody().getWorldCenter(), (float) Math.toRadians(getRotation()));
+        getBody().setTransform(getBody().getWorldCenter(), (float) Math.toRadians(getRotation() + 90));
 
         // dispose of shape definition object to avoid memory leak
         shape.dispose();

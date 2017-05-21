@@ -54,8 +54,11 @@ public class TankGame extends Game {
         batch = new SpriteBatch();
         batch.setProjectionMatrix(camera.combined);
 
-        // add bot tank
+        // add bot tanks
         gameMap.getBots().add(new BotTank(gameMap.getSpawn().x, gameMap.getSpawn().y, gameMap, BotTank.BotDifficulty.easy));
+        gameMap.getBots().add(new BotTank(gameMap.getSpawn().x, gameMap.getSpawn().y, gameMap, BotTank.BotDifficulty.medium));
+        gameMap.getBots().add(new BotTank(gameMap.getSpawn().x, gameMap.getSpawn().y, gameMap, BotTank.BotDifficulty.stationary));
+        gameMap.getBots().add(new BotTank(gameMap.getSpawn().x, gameMap.getSpawn().y, gameMap, BotTank.BotDifficulty.hard));
     }
 
     /**
@@ -122,6 +125,7 @@ public class TankGame extends Game {
         // draw bot tanks
         for (BotTank botTank : gameMap.getBots()){
             botTank.getSprite().draw(batch);
+            botTank.getGunSprite().draw(batch);
         }
 
         // end drawing with SpriteBatch
