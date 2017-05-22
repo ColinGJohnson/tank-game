@@ -3,7 +3,7 @@ package com.mygdx.tanks;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
@@ -60,8 +60,8 @@ public class TankEntity extends Entity{
     public void update(){
 
         // update screen coordinates based on Box2D world
-        setX(getBody().getPosition().x * Constants.PPM - getSprite().getWidth() / 2);
-        setY(getBody().getPosition().y * Constants.PPM - getSprite().getHeight() / 2);
+        setX(getBody().getPosition().x * com.mygdx.tanks.Utils.Constants.PPM - getSprite().getWidth() / 2);
+        setY(getBody().getPosition().y * com.mygdx.tanks.Utils.Constants.PPM - getSprite().getHeight() / 2);
 
         // update sprite rotation based on Box2D world
         setRotation((float)(getBody().getAngle() * 180 / Math.PI));
@@ -79,12 +79,12 @@ public class TankEntity extends Entity{
     /**
      * Moves tank according to specified inputs.
      * @param forward Should the tank move up?
-     * @param back Should the tank move down?
+     * @param backwards Should the tank move down?
      * @param left Should the tank rotate left?
      * @param right Should the tank rotate right?
      * @param target Point the tank's gun should be facing.
      */
-    public void moveTank(boolean forward, boolean back, boolean left, boolean right, boolean shoot, Vector3 target){
+    public void moveTank(boolean forward, boolean backwards, boolean left, boolean right, boolean shoot, Vector2 target){
         float horizontal = 0;
         float vertical = 0;
 
@@ -95,7 +95,7 @@ public class TankEntity extends Entity{
         }
 
         // move tank backwards
-        if (back){
+        if (backwards){
             horizontal -= getV() * MathUtils.cosDeg(getRotation());
             vertical -= getV() * MathUtils.sinDeg(getRotation());
         }
@@ -107,13 +107,11 @@ public class TankEntity extends Entity{
 
         // rotate tank CCW
         if (left){
-            //setRotation(getRotation() + 1);
             rotation += 0.25;
         }
 
         // rotate tank CW
         if (right){
-            //setRotation(getRotation() - 1);
             rotation -= 0.25;
         }
 
@@ -152,7 +150,7 @@ public class TankEntity extends Entity{
         def.type = BodyDef.BodyType.DynamicBody;
 
         // set body position to spawn point
-        def.position.set(getGameMap().getSpawn().x / Constants.PPM, getGameMap().getSpawn().y / Constants.PPM);
+        def.position.set(getGameMap().getSpawn().x / com.mygdx.tanks.Utils.Constants.PPM, getGameMap().getSpawn().y / com.mygdx.tanks.Utils.Constants.PPM);
 
         // tank is allowed to rotate on its own
         def.fixedRotation = false;
@@ -165,7 +163,7 @@ public class TankEntity extends Entity{
 
         // tank collisions determined by rectangular hit box
         // NOTE: width & height measured from center
-        shape.setAsBox(getSprite().getHeight() / 2 / Constants.PPM, getSprite().getWidth() / 2 / Constants.PPM);
+        shape.setAsBox(getSprite().getHeight() / 2 / com.mygdx.tanks.Utils.Constants.PPM, getSprite().getWidth() / 2 / com.mygdx.tanks.Utils.Constants.PPM);
 
         // add new tank body definition to game map
         tankBody = getGameMap().getWorld().createBody(def);

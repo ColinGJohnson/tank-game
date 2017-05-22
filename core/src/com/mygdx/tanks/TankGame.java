@@ -2,14 +2,12 @@ package com.mygdx.tanks;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 
@@ -28,7 +26,7 @@ public class TankGame extends Game {
     AssetManager assets = new AssetManager();
 
     // logic
-    private TiledMap tileMap;
+    private Game game;
     private GameMap gameMap;
 
     // debug
@@ -37,7 +35,8 @@ public class TankGame extends Game {
     @Override
     public void create () {
 
-        // define game map
+        // define game and game map
+        game = this;
         gameMap = new GameMap();
 
         // 2D camera to follow the player's tank
@@ -56,28 +55,23 @@ public class TankGame extends Game {
 
         // add bot tanks
         gameMap.getBots().add(new BotTank(gameMap.getSpawn().x, gameMap.getSpawn().y, gameMap, BotTank.BotDifficulty.easy));
-        gameMap.getBots().add(new BotTank(gameMap.getSpawn().x, gameMap.getSpawn().y, gameMap, BotTank.BotDifficulty.medium));
-        gameMap.getBots().add(new BotTank(gameMap.getSpawn().x, gameMap.getSpawn().y, gameMap, BotTank.BotDifficulty.stationary));
-        gameMap.getBots().add(new BotTank(gameMap.getSpawn().x, gameMap.getSpawn().y, gameMap, BotTank.BotDifficulty.hard));
-    }
+        //gameMap.getBots().add(new BotTank(gameMap.getSpawn().x, gameMap.getSpawn().y, gameMap, BotTank.BotDifficulty.medium));
+        //gameMap.getBots().add(new BotTank(gameMap.getSpawn().x, gameMap.getSpawn().y, gameMap, BotTank.BotDifficulty.stationary));
+        //gameMap.getBots().add(new BotTank(gameMap.getSpawn().x, gameMap.getSpawn().y, gameMap, BotTank.BotDifficulty.hard));
+
+        // start on menu screen
+        setScreen(new PlayScreen(this));
+    } // create
 
     /**
-     * Update all game logic.
+     * Update all game logic. Always called at the start of the render method.
      */
     public void update(float deltaT){
 
         // update map
-        gameMap.update();
+        gameMap.update(deltaT);
 
-        // process user input
-        updateInput();
-
-        // update camera
-        camera.position.set(gameMap.playerTank.getX(), gameMap.playerTank.getY(), 0);
-        camera.update();
-    } // update
-
-    private void updateInput(){
+        // create reference to an input handler appropriate for the current platform
         final PlatformInput input = platformResolver.getPlatformInput();
 
         // exit if requested
@@ -87,9 +81,13 @@ public class TankGame extends Game {
         }
 
         // player input
-        Vector3 targetUnproject = camera.unproject(new Vector3(input.target().x, input.target().y, 0));
-        gameMap.playerTank.moveTank(input.forward(), input.back(), input.left(), input.right(), input.shoot(), targetUnproject);
-    } // updateInput
+        Vector3 playerTarget = camera.unproject(new Vector3(input.target().x, input.target().y, 0));
+        gameMap.playerTank.moveTank(input.forward(), input.back(), input.left(), input.right(), input.shoot(), new Vector2(playerTarget.x, playerTarget.y));
+
+        // update camera
+        camera.position.set(gameMap.playerTank.getX(), gameMap.playerTank.getY(), 0);
+        camera.update();
+    } // update
 
     /**
      * Render loop called 60 times per second by LibGDX. Calls update() then
@@ -132,7 +130,10 @@ public class TankGame extends Game {
         batch.end();
 
         // render box2d debug graphics
-        if(debug)box2DDebugRenderer.render(gameMap.getWorld(), camera.combined.scl(Constants.PPM));
+        if(debug)box2DDebugRenderer.render(gameMap.getWorld(), camera.combined.scl(com.mygdx.tanks.Utils.Constants.PPM));
+
+        // render all screens
+        super.render();
     } // render
 
     @Override

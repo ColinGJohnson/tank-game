@@ -34,7 +34,7 @@ public class ProjectileEntity extends Entity{
 
     private Vector2 getStartPos(){
         Vector2 startPos = new Vector2(source.getX() - 20, source.getY() - 20);
-        float spawnDistance = source.getSprite().getWidth() / Constants.PPM;
+        float spawnDistance = source.getSprite().getWidth() / com.mygdx.tanks.Utils.Constants.PPM;
         startPos.x = (source.getBody().getPosition().x + spawnDistance * MathUtils.cosDeg(source.getGunRotation() + 90));
         startPos.y = (source.getBody().getPosition().y + spawnDistance * MathUtils.sinDeg(source.getGunRotation() + 90));
         return startPos;
@@ -63,8 +63,8 @@ public class ProjectileEntity extends Entity{
         }
 
         // update pixel position variables
-        setX(getBody().getPosition().x * Constants.PPM);
-        setY(getBody().getPosition().y * Constants.PPM);
+        setX(getBody().getPosition().x * com.mygdx.tanks.Utils.Constants.PPM);
+        setY(getBody().getPosition().y * com.mygdx.tanks.Utils.Constants.PPM);
 
         // update sprite position
         getSprite().setX(getX() - getSprite().getWidth() / 2);
@@ -90,7 +90,7 @@ public class ProjectileEntity extends Entity{
 
         // projectile collisions determined by rectangular hit box
         // NOTE: width & height measured from center
-        shape.setAsBox(getSprite().getWidth() / 2 / Constants.PPM, getSprite().getHeight() / 2 / Constants.PPM);
+        shape.setAsBox(getSprite().getWidth() / 2 / com.mygdx.tanks.Utils.Constants.PPM, getSprite().getHeight() / 2 / com.mygdx.tanks.Utils.Constants.PPM);
 
         // add new projectile body definition to game map
         projectileBody = getGameMap().getWorld().createBody(def);

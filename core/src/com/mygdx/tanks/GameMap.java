@@ -52,10 +52,10 @@ public class GameMap {
         tiledMap = mapLoader.load("TankGameMap.tmx");
     } // GameMap Constructor
 
-    public void update(){
+    public void update(float deltaT){
 
         // update Box2D physics
-        world.step(1/60f, 6, 2);
+        world.step(deltaT, 6, 2);
 
         // update bots and remove dead ones
         ArrayList<Object> garbage = new ArrayList<Object>();
