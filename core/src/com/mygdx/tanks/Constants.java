@@ -1,4 +1,4 @@
-package com.mygdx.tanks.Utils;
+package com.mygdx.tanks;
 
 /**
  * Created by colin on 15-May-17.

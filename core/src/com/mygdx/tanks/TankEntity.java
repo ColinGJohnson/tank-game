@@ -14,7 +14,7 @@ import java.util.ArrayList;
  * Created by colin on 14-May-17.
  * An entity representing a tank
  */
-public class TankEntity extends Entity{
+public class TankEntity extends Entity {
     private static final float TANK_SPEED = 2; // speed for tanks
     private static final int FIRING_DELAY = 400; // delay between shots (ms)
 
@@ -60,8 +60,8 @@ public class TankEntity extends Entity{
     public void update(){
 
         // update screen coordinates based on Box2D world
-        setX(getBody().getPosition().x * com.mygdx.tanks.Utils.Constants.PPM - getSprite().getWidth() / 2);
-        setY(getBody().getPosition().y * com.mygdx.tanks.Utils.Constants.PPM - getSprite().getHeight() / 2);
+        setX(getBody().getPosition().x * Constants.PPM - getSprite().getWidth() / 2);
+        setY(getBody().getPosition().y * Constants.PPM - getSprite().getHeight() / 2);
 
         // update sprite rotation based on Box2D world
         setRotation((float)(getBody().getAngle() * 180 / Math.PI));
@@ -150,7 +150,7 @@ public class TankEntity extends Entity{
         def.type = BodyDef.BodyType.DynamicBody;
 
         // set body position to spawn point
-        def.position.set(getGameMap().getSpawn().x / com.mygdx.tanks.Utils.Constants.PPM, getGameMap().getSpawn().y / com.mygdx.tanks.Utils.Constants.PPM);
+        def.position.set(getGameMap().getSpawn().x / Constants.PPM, getGameMap().getSpawn().y / Constants.PPM);
 
         // tank is allowed to rotate on its own
         def.fixedRotation = false;
@@ -163,7 +163,7 @@ public class TankEntity extends Entity{
 
         // tank collisions determined by rectangular hit box
         // NOTE: width & height measured from center
-        shape.setAsBox(getSprite().getHeight() / 2 / com.mygdx.tanks.Utils.Constants.PPM, getSprite().getWidth() / 2 / com.mygdx.tanks.Utils.Constants.PPM);
+        shape.setAsBox(getSprite().getHeight() / 2 / Constants.PPM, getSprite().getWidth() / 2 / Constants.PPM);
 
         // add new tank body definition to game map
         tankBody = getGameMap().getWorld().createBody(def);

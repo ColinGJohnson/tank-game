@@ -1,6 +1,7 @@
 package com.mygdx.tanks;
 
 import com.badlogic.gdx.Screen;
+import com.mygdx.tanks.TankGame;
 
 /**
  * Created by colin on 22-May-17.
@@ -10,6 +11,8 @@ public class MenuScreen implements Screen{
 
     // logic
     private TankGame game;
+
+
 
     public MenuScreen(TankGame game) {
         this.game = game;

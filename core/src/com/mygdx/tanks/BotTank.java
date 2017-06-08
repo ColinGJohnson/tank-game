@@ -6,11 +6,11 @@ import com.badlogic.gdx.math.Vector2;
  * Created by colin on 14-May-17.
  * A computer-controlled bot tank.
  */
-public class BotTank extends TankEntity{
+public class BotTank extends TankEntity {
     private BotDifficulty difficulty;
 
     // possible types of bot tanks
-    enum BotDifficulty{
+    public enum BotDifficulty{
         stationary,
         easy,
         medium,
@@ -79,7 +79,7 @@ public class BotTank extends TankEntity{
             case easy: // easy tanks move towards the player
 
                 // move towards player if not already too close
-                if (d > com.mygdx.tanks.Utils.Constants.BOT_DISTANCE) {
+                if (d > Constants.BOT_DISTANCE) {
 
                     // rotate tank to face player
                     if(target.getRotation() > getRotation()){
@@ -100,7 +100,7 @@ public class BotTank extends TankEntity{
             case medium: // medium tanks circle the player
 
                 // move towards player if not already too close
-                if (d < com.mygdx.tanks.Utils.Constants.BOT_DISTANCE) {
+                if (d < Constants.BOT_DISTANCE) {
 
                     // rotate tank to face ahead of player
 
@@ -111,7 +111,7 @@ public class BotTank extends TankEntity{
             case hard: // hard tanks circle the player and lead their shots
 
                 // move towards player if not already too close
-                if (d < com.mygdx.tanks.Utils.Constants.BOT_DISTANCE) {
+                if (d < Constants.BOT_DISTANCE) {
 
                     // rotate tank to face ahead of player
 
@@ -122,8 +122,8 @@ public class BotTank extends TankEntity{
                 if (target.getBody().getLinearVelocity().x > 0 || target.getBody().getLinearVelocity().y > 0){
 
                     float t = d / (getV() * getBody().getLinearDamping());
-                    targetPosition.x += target.getBody().getLinearVelocity().x * t * com.mygdx.tanks.Utils.Constants.PPM;
-                    targetPosition.y += target.getBody().getLinearVelocity().y * t * com.mygdx.tanks.Utils.Constants.PPM;
+                    targetPosition.x += target.getBody().getLinearVelocity().x * t * Constants.PPM;
+                    targetPosition.y += target.getBody().getLinearVelocity().y * t * Constants.PPM;
                 }
                 break;
         }

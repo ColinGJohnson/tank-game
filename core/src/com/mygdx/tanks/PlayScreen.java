@@ -9,7 +9,6 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.mygdx.tanks.Utils.Constants;
 
 /**
  * Created by colin on 22-May-17.
@@ -33,6 +32,7 @@ public class PlayScreen implements Screen {
 
     @Override
     public void show() {
+
         // define game and game map
         gameMap = new GameMap();
 
@@ -52,12 +52,16 @@ public class PlayScreen implements Screen {
 
         // add bot tanks
         gameMap.getBots().add(new BotTank(gameMap.getSpawn().x, gameMap.getSpawn().y, gameMap, BotTank.BotDifficulty.easy));
-        //gameMap.getBots().add(new BotTank(gameMap.getSpawn().x, gameMap.getSpawn().y, gameMap, BotTank.BotDifficulty.medium));
-        //gameMap.getBots().add(new BotTank(gameMap.getSpawn().x, gameMap.getSpawn().y, gameMap, BotTank.BotDifficulty.stationary));
-        //gameMap.getBots().add(new BotTank(gameMap.getSpawn().x, gameMap.getSpawn().y, gameMap, BotTank.BotDifficulty.hard));
-    }
+        gameMap.getBots().add(new BotTank(gameMap.getSpawn().x, gameMap.getSpawn().y, gameMap, BotTank.BotDifficulty.medium));
+        gameMap.getBots().add(new BotTank(gameMap.getSpawn().x, gameMap.getSpawn().y, gameMap, BotTank.BotDifficulty.stationary));
+        gameMap.getBots().add(new BotTank(gameMap.getSpawn().x, gameMap.getSpawn().y, gameMap, BotTank.BotDifficulty.hard));
+    } // show
 
     @Override
+    /**
+     * The render method for this game screen, contains all of the code to render the game while it
+     * is being played.
+     */
     public void render(float delta) {
 
         // update game logic
@@ -94,8 +98,8 @@ public class PlayScreen implements Screen {
         batch.end();
 
         // render box2d debug graphics
-        if(Constants.DEBUG)box2DDebugRenderer.render(gameMap.getWorld(), camera.combined.scl(com.mygdx.tanks.Utils.Constants.PPM));
-    }
+        if(Constants.DEBUG)box2DDebugRenderer.render(gameMap.getWorld(), camera.combined.scl(Constants.PPM));
+    } // render
 
     /**
      * Update all in-game logic. Always called at the start of the render method.
@@ -128,26 +132,27 @@ public class PlayScreen implements Screen {
 
         // update camera with the application's new dimensions
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-    }
+    } // resize
 
     @Override
     public void pause() {
-
-    }
+        System.out.println("Pause");
+    } // pause
 
     @Override
     public void resume() {
-
-    }
+        System.out.println("Resume");
+    } // resume
 
     @Override
     public void hide() {
-
-    }
+        System.out.println("Hide");
+        pause();
+    } // hide
 
     @Override
     public void dispose() {
         batch.dispose();
         gameMap.getWorld().dispose();
-    }
+    } // dispose
 } // PlayScreen
