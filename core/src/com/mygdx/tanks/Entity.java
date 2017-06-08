@@ -2,7 +2,6 @@ package com.mygdx.tanks;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.mygdx.tanks.GameMap;
 
 import java.util.UUID;
 

@@ -34,7 +34,7 @@ public class GameMap {
     public GameMap(){
 
         // set spawn point for map
-        spawn = new Vector2(1200, 1200);
+        spawn = new Vector2(2000, 2000);
 
         // define Box2D world with no gravity in either direction
         world = new World(new Vector2(0, 0), false);

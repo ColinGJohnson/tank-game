@@ -12,9 +12,8 @@ public class MenuScreen implements Screen{
     // logic
     private TankGame game;
 
-
-
     public MenuScreen(TankGame game) {
+
         this.game = game;
     } // MenuScreen Constructor
 

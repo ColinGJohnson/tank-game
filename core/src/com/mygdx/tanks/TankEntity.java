@@ -34,7 +34,7 @@ public class TankEntity extends Entity {
         blue,
         green,
         red
-    }
+    } // TankColor
 
     /**
      * TankEntity Constructor.
