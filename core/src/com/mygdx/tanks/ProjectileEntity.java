@@ -12,11 +12,11 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
  * Created by colin on 16-May-17.
  */
 public class ProjectileEntity extends Entity {
-    public static final float PROJECTILE_SPEED = 12; // speed for projectiles (m/s)
+    public static final float PROJECTILE_SPEED = 20; // speed for projectiles (m/s)
 
     private TankEntity source;
     private boolean used = false; // true if this projectile has been used already
-    private Entity contact = null; //
+    private Entity contact = null; // set to the entity this projectile comes in contact with
 
     public ProjectileEntity(TankEntity source, GameMap gameMap) {
         super(0, 0, PROJECTILE_SPEED, gameMap);
@@ -124,6 +124,16 @@ public class ProjectileEntity extends Entity {
     } // getContact
 
     public void setContact(Entity contact) {
+
+        // set contact tracking variable
         this.contact = contact;
+
+        // if the projectile has hit a tank
+        if (contact instanceof TankEntity){
+            ((TankEntity) contact).setDestroyed(true);
+        }
+
+        // this projectile has been used, mark it to be removed
+        setUsed(true);
     } // setContact
 } // ProjectileEntity

@@ -1,13 +1,25 @@
 package com.mygdx.tanks;
 
+import com.badlogic.gdx.maps.Map;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapObjects;
+import com.badlogic.gdx.maps.objects.CircleMapObject;
+import com.badlogic.gdx.maps.objects.PolygonMapObject;
+import com.badlogic.gdx.maps.objects.PolylineMapObject;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
+import com.badlogic.gdx.maps.objects.TextureMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 
 import java.util.ArrayList;
@@ -22,7 +34,9 @@ public class GameMap {
 
     private TmxMapLoader mapLoader;
     private TiledMap tiledMap; // tiledMap to define map bounds and graphics locations
+    private final float mapPPT = 128; // pixels per tile for the tiled map
     private Vector2 spawn; // starting position for players on this map
+    private ArrayList<Vector2> botSpawns; // possible spawn points for bot tanks
 
     private ArrayList<BotTank> bots = new ArrayList<BotTank>(); // computer controlled tanks on map
     private ArrayList<ProjectileEntity> projectiles = new ArrayList<ProjectileEntity>(); // projectiles
@@ -49,6 +63,12 @@ public class GameMap {
         mapLoader = new TmxMapLoader();
         tiledMap = new TiledMap();
         tiledMap = mapLoader.load("TankGameMap.tmx");
+
+        // create collision bounds for map
+        addCollisions(tiledMap, world);
+
+        // get bot spawn points for map
+        addSpawns(tiledMap);
     } // GameMap Constructor
 
     public void update(float deltaT){
@@ -61,6 +81,11 @@ public class GameMap {
         for (BotTank bot : bots){
             bot.update();
             if (bot.isDestroyed()){
+
+                // remove this bot's box2D body
+                world.destroyBody(bot.getBody());
+
+                // add the bot to the garbage list to be removed
                 garbage.add(bot);
             }
         }
@@ -70,6 +95,11 @@ public class GameMap {
         for (ProjectileEntity projectile : projectiles) {
             projectile.update();
             if (projectile.isUsed()){
+
+                // remove this projectile's box2D body
+                world.destroyBody(projectile.getBody());
+
+                // add the projectile to the garbage list to be removed
                 garbage.add(projectile);
             }
         }
@@ -84,17 +114,15 @@ public class GameMap {
         contactListener = new ContactListener() {
             @Override
             public void beginContact(Contact contact) {
-                System.out.println("collision");
                 Body a = contact.getFixtureA().getBody();
                 Body b = contact.getFixtureB().getBody();
 
-                if (a.getUserData() instanceof TankEntity && b.getUserData() instanceof ProjectileEntity
-                        || b.getUserData() instanceof TankEntity && a.getUserData() instanceof ProjectileEntity){
-                    if (a.getUserData() instanceof ProjectileEntity){
-                        ((ProjectileEntity) a.getUserData()).setContact((TankEntity)b.getUserData());
-                    } else {
-                        ((ProjectileEntity) b.getUserData()).setContact((TankEntity)a.getUserData());
-                    }
+                if (a.getUserData() instanceof ProjectileEntity){
+                    ((ProjectileEntity) a.getUserData()).setContact((TankEntity)b.getUserData());
+                }
+
+                if (b.getUserData() instanceof ProjectileEntity){
+                    ((ProjectileEntity) b.getUserData()).setContact((TankEntity)a.getUserData());
                 }
             }
 
@@ -107,7 +135,52 @@ public class GameMap {
             @Override
             public void postSolve(Contact contact, ContactImpulse impulse) {}
         };
+        world.setContactListener(contactListener);
     } // contactListener
+
+    /**
+     * Adds collision bounds as defined on the .tmx tiled map file in the "Collisions" layer
+     * @param map the tiled map to be processed
+     * @param world The box2D world to add bodies to
+     */
+    public void addCollisions(Map map, World world) {
+
+        // add box2D bodies to represent map walls
+        MapObjects objects = map.getLayers().get("Collisions").getObjects();
+        for(MapObject object : objects) {
+            if (object instanceof RectangleMapObject) {
+                Shape  shape = getRectangle((RectangleMapObject) object);
+                BodyDef def = new BodyDef();
+                def.type = BodyDef.BodyType.StaticBody;
+                float xPos = ((RectangleMapObject) object).getRectangle().getX();
+                float yPos = ((RectangleMapObject) object).getRectangle().getY();
+                float width = ((RectangleMapObject) object).getRectangle().getWidth();
+                float height = ((RectangleMapObject) object).getRectangle().getHeight();
+                def.position.set((xPos + width * 0.5f) / Constants.PPM, (yPos + height * 0.5f) / Constants.PPM);
+                Body body = world.createBody(def);
+                body.createFixture(shape, 1);
+                shape.dispose();
+            }
+        }
+    } // addCollisions
+
+    private PolygonShape getRectangle(RectangleMapObject rectangleObject) {
+        Rectangle rectangle = rectangleObject.getRectangle();
+        PolygonShape polygon = new PolygonShape();
+        polygon.setAsBox(rectangle.width / 2 / Constants.PPM, rectangle.height / 2 / Constants.PPM);
+        return polygon;
+    } // PolygonShape
+
+    private void addSpawns(Map map){
+        System.out.println("spawn!");
+        MapObjects objects = map.getLayers().get("SpawnPoints").getObjects();
+        System.out.println(objects.getCount());
+        for(MapObject object : objects) {
+            System.out.println("spawn");
+            if (object instanceof RectangleMapObject) {
+            }
+        }
+    } // addSpawns
 
     public World getWorld() {
         return world;

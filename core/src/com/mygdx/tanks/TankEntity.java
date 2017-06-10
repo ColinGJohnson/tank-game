@@ -15,7 +15,7 @@ import java.util.ArrayList;
  * An entity representing a tank
  */
 public class TankEntity extends Entity {
-    private static final float TANK_SPEED = 2; // speed for tanks
+    private static final float TANK_SPEED = 3; // speed for tanks
     private static final int FIRING_DELAY = 400; // delay between shots (ms)
 
     private TankColor tankColor; // enum representing the color of this tank
@@ -46,6 +46,10 @@ public class TankEntity extends Entity {
 
         // call superclass constructor in Entity
         super(x,y, TANK_SPEED, gameMap);
+
+        // set tank position
+        setX(x);
+        setY(y);
 
         // set tank color
         this.tankColor = tankColor;
@@ -141,7 +145,7 @@ public class TankEntity extends Entity {
      * Defines a Box2D body to handle collisions with this tank.
      */
     @Override
-    public void defineBody(){
+    public void defineBody() {
         Body tankBody;
         BodyDef def = new BodyDef();
         PolygonShape shape = new PolygonShape();
@@ -150,7 +154,7 @@ public class TankEntity extends Entity {
         def.type = BodyDef.BodyType.DynamicBody;
 
         // set body position to spawn point
-        def.position.set(getGameMap().getSpawn().x / Constants.PPM, getGameMap().getSpawn().y / Constants.PPM);
+        def.position.set(getX() / Constants.PPM, getY() / Constants.PPM);
 
         // tank is allowed to rotate on its own
         def.fixedRotation = false;
@@ -238,6 +242,8 @@ public class TankEntity extends Entity {
     }
 
     public void setDestroyed(boolean destroyed) {
+
+        // mark this entity for removal in the main game loop
         this.destroyed = destroyed;
     }
 } // TankEntity
