@@ -3,11 +3,7 @@ package com.mygdx.tanks;
 import com.badlogic.gdx.maps.Map;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
-import com.badlogic.gdx.maps.objects.CircleMapObject;
-import com.badlogic.gdx.maps.objects.PolygonMapObject;
-import com.badlogic.gdx.maps.objects.PolylineMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
-import com.badlogic.gdx.maps.objects.TextureMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Rectangle;
@@ -23,6 +19,7 @@ import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Created by colin on 15-May-17.
@@ -36,19 +33,21 @@ public class GameMap {
     private TiledMap tiledMap; // tiledMap to define map bounds and graphics locations
     private final float mapPPT = 128; // pixels per tile for the tiled map
     private Vector2 spawn; // starting position for players on this map
-    private ArrayList<Vector2> botSpawns; // possible spawn points for bot tanks
+    private ArrayList<Vector2> botSpawns = new ArrayList<Vector2>(); // possible spawn points for bot tanks
 
     private ArrayList<BotTank> bots = new ArrayList<BotTank>(); // computer controlled tanks on map
     private ArrayList<ProjectileEntity> projectiles = new ArrayList<ProjectileEntity>(); // projectiles
     public PlayerTank playerTank; // reference to player tank object
+
+    private long lastBotSpawn = 0;
 
     /**
      * GameMap constructor.
      */
     public GameMap(){
 
-        // set spawn point for map
-        spawn = new Vector2(2000, 2000);
+        // set player spawn point in the center of the map
+        spawn = new Vector2(2560, 2560);
 
         // define Box2D world with no gravity in either direction
         world = new World(new Vector2(0, 0), false);
@@ -103,11 +102,26 @@ public class GameMap {
                 garbage.add(projectile);
             }
         }
+        projectiles.removeAll(garbage);
+
+        // add a new bot if enough time has passed and there aren't already too many in play
+        if (System.currentTimeMillis() > lastBotSpawn + Constants.SPAWN_DELAY
+                && bots.size() < Constants.MAX_BOTS) {
+
+            // record time of bot spawn
+            lastBotSpawn = System.currentTimeMillis();
+
+            // select a random spawn point by choosing a random integer to use as the index for the
+            // bot spawn point array
+            Random rand = new Random();
+            int randSpawn = rand.nextInt(getBotSpawns().size());
+
+            // add the new bot tank to the list of bot tanks
+            bots.add(new BotTank(getBotSpawns().get(randSpawn).x, getBotSpawns().get(randSpawn).y, this, BotTank.BotDifficulty.random));
+        }
 
         // update player
         playerTank.update();
-
-        projectiles.removeAll(garbage);
     }
 
     private void contactListener(){
@@ -118,11 +132,16 @@ public class GameMap {
                 Body b = contact.getFixtureB().getBody();
 
                 if (a.getUserData() instanceof ProjectileEntity){
-                    ((ProjectileEntity) a.getUserData()).setContact((TankEntity)b.getUserData());
-                }
+                    if (b.getUserData() instanceof TankEntity) {
+                        ((ProjectileEntity) a.getUserData()).setContact((TankEntity)b.getUserData());
+                    }
+                    ((ProjectileEntity) a.getUserData()).setUsed(true);
 
-                if (b.getUserData() instanceof ProjectileEntity){
-                    ((ProjectileEntity) b.getUserData()).setContact((TankEntity)a.getUserData());
+                } else if (b.getUserData() instanceof ProjectileEntity){
+                    if (a.getUserData() instanceof TankEntity) {
+                        ((ProjectileEntity) b.getUserData()).setContact((TankEntity)a.getUserData());
+                    }
+                    ((ProjectileEntity) b.getUserData()).setUsed(true);
                 }
             }
 
@@ -173,13 +192,17 @@ public class GameMap {
 
     private void addSpawns(Map map){
         System.out.println("spawn!");
-        MapObjects objects = map.getLayers().get("SpawnPoints").getObjects();
+        MapObjects objects = map.getLayers().get("Bots").getObjects();
         System.out.println(objects.getCount());
         for(MapObject object : objects) {
             System.out.println("spawn");
-            if (object instanceof RectangleMapObject) {
-            }
+            float xPos = ((RectangleMapObject) object).getRectangle().getX();
+            float yPos = ((RectangleMapObject) object).getRectangle().getY();
+            float width = ((RectangleMapObject) object).getRectangle().getWidth();
+            float height = ((RectangleMapObject) object).getRectangle().getHeight();
+            botSpawns.add(new Vector2(xPos + width * 0.5f, yPos + height * 0.5f));
         }
+        System.out.println(botSpawns);
     } // addSpawns
 
     public World getWorld() {
@@ -228,5 +251,13 @@ public class GameMap {
 
     public void setPlayerTank(PlayerTank playerTank) {
         this.playerTank = playerTank;
+    }
+
+    public ArrayList<Vector2> getBotSpawns() {
+        return botSpawns;
+    }
+
+    public void setBotSpawns(ArrayList<Vector2> botSpawns) {
+        this.botSpawns = botSpawns;
     }
 } // GameMap

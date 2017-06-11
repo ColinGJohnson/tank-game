@@ -2,6 +2,8 @@ package com.mygdx.tanks;
 
 import com.badlogic.gdx.math.Vector2;
 
+import java.util.Random;
+
 /**
  * Created by colin on 14-May-17.
  * A computer-controlled bot tank.
@@ -11,6 +13,7 @@ public class BotTank extends TankEntity {
 
     // possible types of bot tanks
     public enum BotDifficulty{
+        random,
         stationary,
         easy,
         medium,
@@ -29,6 +32,31 @@ public class BotTank extends TankEntity {
 
         // init variables
         this.difficulty = difficulty;
+
+        // select a random difficulty if required
+        if (difficulty == BotDifficulty.random){
+
+            // assign random difficulty according to random integer 0, 1, 2, or 3
+            Random rand = new Random();
+            int randDifficulty = rand.nextInt(4);
+            switch (randDifficulty){
+                case 0:
+                    difficulty = BotDifficulty.stationary;
+                    break;
+                case 1:
+                    difficulty = BotDifficulty.easy;
+                    break;
+                case 2:
+                    difficulty = BotDifficulty.medium;
+                    break;
+                case 3:
+                    difficulty = BotDifficulty.hard;
+                    break;
+                default:
+                    difficulty = BotDifficulty.stationary;
+                    System.err.println("Invalid bot difficulty requested");
+            }
+        }
 
         // set correct color according to bot difficulty
         switch (difficulty){
@@ -68,43 +96,64 @@ public class BotTank extends TankEntity {
         // calculate bot -> target distance
         float d = (float)(Math.sqrt(Math.pow(target.getBody().getPosition().x - getBody().getPosition().x, 2) + Math.pow(target.getBody().getPosition().y - getBody().getPosition().y, 2)));
 
-        // calculate angle to target
+        // calculate angle needed to rotate to in order to face the player tank
+        float rotateAngle = rotateTankToPosition(targetPosition.x, targetPosition.y);
+        if(rotateAngle < 0){
+            rotateAngle += 360;
+        }
 
+        // get adjusted tank rotation for AI cacluations (lowest coterminal angle)
+        float rotation = getRotation();
+        if (getRotation() > 360f){
+            rotation %= 360f;
+        } else if (getRotation() < 0){
+            rotation = rotation + (360f * ((int)(-rotation / 360) + 1));
+        }
+
+        // move towards player if not already too close
+        if (d > Constants.BOT_DISTANCE) {
+
+            // drive forward/backwards towards player
+            if ((rotation - rotateAngle > 90 && rotation - rotateAngle < 180) || (rotation - rotateAngle > -270 && rotation - rotateAngle < -90)) {
+                backward = true;
+            } else {
+                forward = true;
+            }
+        }
 
         // actions dependant on bot difficulty
         switch (difficulty){
-            case stationary: // stationary tanks do not move
+            case stationary: // stationary tanks do not move, they just shoot
                 // do nothing, these tanks are dumb
                 break;
             case easy: // easy tanks move towards the player
 
-                // move towards player if not already too close
+                // rotate to face player if not already too close
                 if (d > Constants.BOT_DISTANCE) {
 
-                    // rotate tank to face player
-                    if(target.getRotation() > getRotation()){
-                        right = true;
-                    } else {
-                        left = true;
-                    }
-
-                    // drive forward/backwards towards player
-                    if(target.getRotation()/360 - getRotation()/360 > 180){
-                        backward = true;
-                    } else {
-                        forward = true;
+                    // rotate to face player if needed
+                    if (Math.abs(rotation - rotateAngle) > 1) {
+                        if (rotation - rotateAngle > 0) {
+                            right = true;
+                        } else if (rotation - rotateAngle < 0) {
+                            left = true;
+                        }
                     }
                 }
-
                 break;
             case medium: // medium tanks circle the player
 
                 // move towards player if not already too close
-                if (d < Constants.BOT_DISTANCE) {
+                if (d > Constants.BOT_DISTANCE) {
 
-                    // rotate tank to face ahead of player
+                    rotation += 30;
 
-                    // drive towards player in a circle
+                    // drive forward/backwards towards player
+                    if ((rotation - rotateAngle > 90 && rotation - rotateAngle < 180) || (rotation - rotateAngle > -270 && rotation - rotateAngle < -90)) {
+                        backward = true;
+                    } else {
+                        forward = true;
+                    }
                 }
 
                 break;
@@ -116,12 +165,13 @@ public class BotTank extends TankEntity {
                     // rotate tank to face ahead of player
 
                     // drive towards player in a circle
+
                 }
 
                 // aim ahead if target tank is moving
                 if (target.getBody().getLinearVelocity().x > 0 || target.getBody().getLinearVelocity().y > 0){
 
-                    float t = d / (getV() * getBody().getLinearDamping());
+                    float t = d / (ProjectileEntity.PROJECTILE_SPEED);
                     targetPosition.x += target.getBody().getLinearVelocity().x * t * Constants.PPM;
                     targetPosition.y += target.getBody().getLinearVelocity().y * t * Constants.PPM;
                 }
@@ -133,4 +183,8 @@ public class BotTank extends TankEntity {
         // rotate gun to face target tankEntity
         rotateGunToPosition(targetPosition.x, targetPosition.y);
     } // update
+
+    private float rotateTankToPosition(float targetX, float targetY){
+        return (float)(-Math.toDegrees(Math.atan2((getX() + getSprite().getWidth() / 2) - targetX, (getY() + getSprite().getHeight() / 2) - targetY))) - 90;
+    }
 } // BotTank

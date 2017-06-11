@@ -15,7 +15,7 @@ import java.util.ArrayList;
  * An entity representing a tank
  */
 public class TankEntity extends Entity {
-    private static final float TANK_SPEED = 3; // speed for tanks
+    private static final float TANK_SPEED = 2; // speed for tanks
     private static final int FIRING_DELAY = 400; // delay between shots (ms)
 
     private TankColor tankColor; // enum representing the color of this tank

@@ -39,7 +39,7 @@ public class PlayScreen implements Screen {
         // 2D camera to follow the player's tank
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        camera.zoom = 4f;
+        camera.zoom = 2f;
 
         // renderers to draw .tmx map files and Box2D world
         tmxRenderer = new OrthogonalTiledMapRenderer(gameMap.getTiledMap());
@@ -51,10 +51,7 @@ public class PlayScreen implements Screen {
         batch.setProjectionMatrix(camera.combined);
 
         // add bot tanks
-        //gameMap.getBots().add(new BotTank(gameMap.getSpawn().x, gameMap.getSpawn().y, gameMap, BotTank.BotDifficulty.easy));
-        //gameMap.getBots().add(new BotTank(gameMap.getSpawn().x + 100, gameMap.getSpawn().y, gameMap, BotTank.BotDifficulty.medium));
-        //gameMap.getBots().add(new BotTank(gameMap.getSpawn().x + 200, gameMap.getSpawn().y, gameMap, BotTank.BotDifficulty.stationary));
-        //gameMap.getBots().add(new BotTank(gameMap.getSpawn().x + 300, gameMap.getSpawn().y, gameMap, BotTank.BotDifficulty.hard));
+        gameMap.getBots().add(new BotTank(2000, 2000, gameMap, BotTank.BotDifficulty.easy));
     } // show
 
     @Override
