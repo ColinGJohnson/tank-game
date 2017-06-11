@@ -10,8 +10,7 @@ public class AndroidLauncher extends AndroidApplication {
 	protected void onCreate (Bundle savedInstanceState) {
 
         // set game to android mode
-        TankGame.setPlatformResolver(new AndroidResolver());
-
+        TankGame.platformResolver = new AndroidResolver();
 
 		// start android application
 		super.onCreate(savedInstanceState);

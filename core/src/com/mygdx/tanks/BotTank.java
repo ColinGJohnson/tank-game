@@ -34,48 +34,52 @@ public class BotTank extends TankEntity {
         this.difficulty = difficulty;
 
         // select a random difficulty if required
-        if (difficulty == BotDifficulty.random){
+        if (this.difficulty == BotDifficulty.random){
 
             // assign random difficulty according to random integer 0, 1, 2, or 3
             Random rand = new Random();
             int randDifficulty = rand.nextInt(4);
             switch (randDifficulty){
                 case 0:
-                    difficulty = BotDifficulty.stationary;
+                    this.difficulty = BotDifficulty.stationary;
                     break;
                 case 1:
-                    difficulty = BotDifficulty.easy;
+                    this.difficulty = BotDifficulty.easy;
                     break;
                 case 2:
-                    difficulty = BotDifficulty.medium;
+                    this.difficulty = BotDifficulty.medium;
                     break;
                 case 3:
-                    difficulty = BotDifficulty.hard;
+                    this.difficulty = BotDifficulty.hard;
                     break;
                 default:
-                    difficulty = BotDifficulty.stationary;
+                    this.difficulty = BotDifficulty.stationary;
                     System.err.println("Invalid bot difficulty requested");
             }
         }
 
-        // set correct color according to bot difficulty
-        switch (difficulty){
+        // set correct color and speed according to bot difficulty
+        switch (this.difficulty){
             case stationary:
                 setTankColor(TankColor.blue);
+                setV(0);
                 break;
             case easy:
                 setTankColor(TankColor.beige);
+                setV(getV()/3f);
                 break;
             case medium:
-                setTankColor(TankColor.black);
+                setTankColor(TankColor.red);
+                setV(getV()/2f);
                 break;
             case hard:
-                setTankColor(TankColor.red);
+                setTankColor(TankColor.black);
                 break;
-            default:
-                difficulty = BotDifficulty.easy;
-                setTankColor(TankColor.blue);
         }
+
+        // spawn with random rotation
+        Random rand = new Random();
+        //setRotation(rand.nextInt(360));
     } // BotTank Constructor
 
     public void update() {
@@ -83,6 +87,7 @@ public class BotTank extends TankEntity {
         boolean backward = false;
         boolean left = false;
         boolean right = false;
+        boolean shoot = false;
 
         // call update method in TankEntity class
         super.update();
@@ -126,7 +131,7 @@ public class BotTank extends TankEntity {
             case stationary: // stationary tanks do not move, they just shoot
                 // do nothing, these tanks are dumb
                 break;
-            case easy: // easy tanks move towards the player
+            case easy: // easy tanks move towards the player slowly
 
                 // rotate to face player if not already too close
                 if (d > Constants.BOT_DISTANCE) {
@@ -141,31 +146,34 @@ public class BotTank extends TankEntity {
                     }
                 }
                 break;
-            case medium: // medium tanks circle the player
+            case medium: // medium tanks move towards the player fast && at an angle
 
-                // move towards player if not already too close
+                // rotate to face player if not already too close
                 if (d > Constants.BOT_DISTANCE) {
 
-                    rotation += 30;
-
-                    // drive forward/backwards towards player
-                    if ((rotation - rotateAngle > 90 && rotation - rotateAngle < 180) || (rotation - rotateAngle > -270 && rotation - rotateAngle < -90)) {
-                        backward = true;
-                    } else {
-                        forward = true;
+                    // rotate to face player if needed
+                    if (Math.abs(rotation + 45 - rotateAngle) > 1) {
+                        if (rotation + 45 - rotateAngle > 0) {
+                            right = true;
+                        } else if (rotation + 45 - rotateAngle < 0) {
+                            left = true;
+                        }
                     }
                 }
-
                 break;
-            case hard: // hard tanks circle the player and lead their shots
+            case hard: // hard tanks lead their shots + medium tank stuff
 
-                // move towards player if not already too close
-                if (d < Constants.BOT_DISTANCE) {
+                // rotate to face player if not already too close
+                if (d > Constants.BOT_DISTANCE) {
 
-                    // rotate tank to face ahead of player
-
-                    // drive towards player in a circle
-
+                    // rotate to face player if needed
+                    if (Math.abs(rotation + 45 - rotateAngle) > 1) {
+                        if (rotation + 45 - rotateAngle > 0) {
+                            right = true;
+                        } else if (rotation - 45 - rotateAngle < 0) {
+                            left = true;
+                        }
+                    }
                 }
 
                 // aim ahead if target tank is moving
@@ -178,7 +186,12 @@ public class BotTank extends TankEntity {
                 break;
         }
 
-        moveTank(forward, backward, left, right, false, targetPosition);
+        // shoot only if the player tank is within range
+        if (d < Constants.BOT_RANGE){
+            shoot = true;
+        }
+
+        moveTank(forward, backward, left, right, shoot, targetPosition);
 
         // rotate gun to face target tankEntity
         rotateGunToPosition(targetPosition.x, targetPosition.y);

@@ -56,8 +56,4 @@ public class TankGame extends Game {
     public static PlatformResolver getPlatformResolver() {
         return platformResolver;
     } // getPlatformResolver
-
-    public static void setPlatformResolver(PlatformResolver platformResolver) {
-        platformResolver = platformResolver;
-    } // setPlatformResolver
 } // TankGame

@@ -11,9 +11,9 @@ public class Constants {
     // game behaviors
     public static final int BOT_RANGE = 20; // how far bots can shoot from (m)
     public static final int BOT_DISTANCE = 10; // how close bots will try to get to the player (m)
-    public static final int MAX_BOTS = 0; // the maximum number of bots allowed to be in play
-    public static final int SPAWN_DELAY = 2000; // delay between spawn attempts (ms)
+    public static final int MAX_BOTS = 10; // the maximum number of bots allowed to be in play
+    public static final int SPAWN_DELAY = 1000; // delay between spawn attempts (ms)
 
     // debug
-    public static final boolean DEBUG = true; // show debug information
+    public static final boolean DEBUG = false; // show debug information
 } // constants

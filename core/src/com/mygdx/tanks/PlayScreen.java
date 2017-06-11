@@ -10,6 +10,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 
+import java.util.Random;
+
 /**
  * Created by colin on 22-May-17.
  */
@@ -19,6 +21,7 @@ public class PlayScreen implements Screen {
     // logic
     private TankGame game;
     private GameMap gameMap;
+    private int score = 0;
 
     // graphics
     private SpriteBatch batch;
@@ -49,9 +52,6 @@ public class PlayScreen implements Screen {
         // sprite batch for drawing textures
         batch = new SpriteBatch();
         batch.setProjectionMatrix(camera.combined);
-
-        // add bot tanks
-        gameMap.getBots().add(new BotTank(2000, 2000, gameMap, BotTank.BotDifficulty.easy));
     } // show
 
     @Override

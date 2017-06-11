@@ -75,6 +75,11 @@ public class GameMap {
         // update Box2D physics
         world.step(deltaT, 6, 2);
 
+        // check if the player has been destroyed
+        if (playerTank.isDestroyed()){
+            System.exit(0);
+        }
+
         // update bots and remove dead ones
         ArrayList<Object> garbage = new ArrayList<Object>();
         for (BotTank bot : bots){
