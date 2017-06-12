@@ -1,5 +1,6 @@
 package com.mygdx.tanks;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
@@ -26,6 +27,8 @@ public class TankEntity extends Entity {
     private boolean destroyed = false; // has this tank been shot?
 
     private ArrayList<Sprite> treadSprites = new ArrayList<Sprite>(); // tread marks from this tank
+    private float distanceTravelled = 0;
+    private float stationaryRotation = 0;
 
     // allowable tank colors
     public enum TankColor {
@@ -107,6 +110,7 @@ public class TankEntity extends Entity {
         // apply tank movement to physics body
         getBody().setLinearVelocity(getBody().getLinearVelocity().x + horizontal, getBody().getLinearVelocity().y + vertical);
 
+        // variable to track the requested tank rotation
         float rotation = 0;
 
         // rotate tank CCW
@@ -121,6 +125,24 @@ public class TankEntity extends Entity {
 
         // apply tank rotation to physics body
         getBody().setAngularVelocity(getBody().getAngularVelocity() + rotation);
+
+        // add distance travelled to distanceTravelled variable to track tread effects
+        //distanceTravelled += Math.sqrt(Math.pow(horizontal, 2) + Math.pow(vertical, 2));
+        distanceTravelled += Gdx.graphics.getDeltaTime() * Math.sqrt(Math.pow(getBody().getLinearVelocity().y, 2) + Math.pow(getBody().getLinearVelocity().x, 2));
+
+        // add rotation to stationary rotation variable to track tread effects for turning in one spot
+        if (Math.sqrt(Math.pow(getBody().getLinearVelocity().y, 2) + Math.pow(getBody().getLinearVelocity().x, 2)) < getV() / 2){
+            stationaryRotation += Math.abs(rotation);
+        }
+
+        // place a tread effect on the map if the tank has travelled/rotated far enough
+        if (distanceTravelled > 0.5){
+            distanceTravelled = 0;
+            getGameMap().getEffects().add(new EffectEntity(getX(), getY(), getRotation(), getGameMap(), EffectEntity.EffectType.treadMark, 5000));
+        } else if (stationaryRotation > 3){
+            stationaryRotation = 0;
+            getGameMap().getEffects().add(new EffectEntity(getX(), getY(), getRotation(), getGameMap(), EffectEntity.EffectType.treadMark, 5000));
+        }
 
         // shoot
         if (shoot && lastShot + FIRING_DELAY < System.currentTimeMillis()){

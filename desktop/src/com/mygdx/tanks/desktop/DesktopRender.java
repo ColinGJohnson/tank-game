@@ -1,39 +1,60 @@
 package com.mygdx.tanks.desktop;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
+import com.mygdx.tanks.PlatformRender;
 
 /**
  * Created by Colin on 2017-05-17.
  */
 
-public class DesktopRender {
-    public Stage stage;
-    private Viewport viewPort;
+public class DesktopRender implements PlatformRender {
 
-    private int score;
-    Label scoreLabel;
+    private OrthographicCamera camera;
+    private Stage stage;
+    private SpriteBatch batch;
+    private Touchpad touchpad;
+    private Skin skin;
+    private float blockSpeed;
 
-    public DesktopRender(SpriteBatch spriteBatch){
-        score = 0;
+    public DesktopRender() {
+        batch = new SpriteBatch();
+        //Create camera
+        float aspectRatio = (float) Gdx.graphics.getWidth() / (float) Gdx.graphics.getHeight();
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, 10f*aspectRatio, 10f);
 
-        viewPort = new ScreenViewport();
-        stage = new Stage(viewPort);
+        // load user interface skin
+        skin = new Skin(Gdx.files.internal("kenneyUISkin.json"));
 
-        Table table = new Table();
-        table.top();
-        table.setFillParent(true);
+        //Create new TouchPad with the created style
+        touchpad = new Touchpad(10, skin);
+        //setBounds(x,y,width,height)
+        touchpad.setBounds(15, 15, 200, 200);
 
-        scoreLabel = new Label(String.valueOf(score), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        table.add(scoreLabel).padTop(30);
+        //Create a Stage and add TouchPad
+        stage = new Stage();
+        stage.addActor(touchpad);
+        Gdx.input.setInputProcessor(stage);
+    }
 
-        stage.addActor(table);
+    @Override
+    public void renderPlatformHUD() {
+        stage.act(Gdx.graphics.getDeltaTime());
+        stage.draw();
+    }
+
+    @Override
+    public void renderPlatformMenu() {
+
+    }
+
+    @Override
+    public void renderPlatformPause() {
+
     }
 }

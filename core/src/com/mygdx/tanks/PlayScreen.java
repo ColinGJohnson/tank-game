@@ -1,6 +1,7 @@
 package com.mygdx.tanks;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -16,12 +17,11 @@ import java.util.Random;
  * Created by colin on 22-May-17.
  */
 
-public class PlayScreen implements Screen {
+public class PlayScreen implements Screen, InputProcessor {
 
     // logic
     private TankGame game;
     private GameMap gameMap;
-    private int score = 0;
 
     // graphics
     private SpriteBatch batch;
@@ -40,8 +40,10 @@ public class PlayScreen implements Screen {
         gameMap = new GameMap();
 
         // 2D camera to follow the player's tank
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        //camera = new OrthographicCamera();
+        //camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        camera = new OrthographicCamera(1920, 1080);
+        camera.setToOrtho(false, 1920, 1080);
         camera.zoom = 2f;
 
         // renderers to draw .tmx map files and Box2D world
@@ -52,6 +54,9 @@ public class PlayScreen implements Screen {
         // sprite batch for drawing textures
         batch = new SpriteBatch();
         batch.setProjectionMatrix(camera.combined);
+
+        // set the input processor to this stage to stop the menu buttons from still working
+        Gdx.input.setInputProcessor(this);
     } // show
 
     @Override
@@ -75,6 +80,13 @@ public class PlayScreen implements Screen {
         // begin drawing with SpriteBatch
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
+
+        // draw tank trail effects
+        for (EffectEntity effect : gameMap.getEffects()){
+            if (effect.getEffectType() == EffectEntity.EffectType.treadMark){
+                effect.getSprite().draw(batch);
+            }
+        }
 
         // draw projectiles
         for(ProjectileEntity projectileEntity: gameMap.getProjectiles()){
@@ -105,7 +117,9 @@ public class PlayScreen implements Screen {
         if(Constants.DEBUG)box2DDebugRenderer.render(gameMap.getWorld(), camera.combined.scl(Constants.PPM));
 
         // draw hud
-        //game.platformResolver.get
+        // create reference to an input handler appropriate for the current platform
+        final PlatformRender render = game.platformResolver.getPlatformRenderer();
+        render.renderPlatformHUD();
     } // render
 
     /**
@@ -162,4 +176,44 @@ public class PlayScreen implements Screen {
         batch.dispose();
         gameMap.getWorld().dispose();
     } // dispose
+
+    @Override
+    public boolean keyDown(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        return false;
+    }
+
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        return false;
+    }
+
+    @Override
+    public boolean scrolled(int amount) {
+        return false;
+    }
 } // PlayScreen

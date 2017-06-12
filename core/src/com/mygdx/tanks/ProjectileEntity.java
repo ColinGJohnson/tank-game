@@ -27,7 +27,7 @@ public class ProjectileEntity extends Entity {
             setSprite(new Sprite(new Texture("Kenney/Bullets/bulletSilverSilver.png")));
             setV(getV() * 0.75f);
         } else {
-            setSprite(new Sprite(new Texture("Kenney/Bullets/bulletBeige.png")));
+            setSprite(new Sprite(new Texture("Kenney/Bullets/bulletYellow.png")));
             setV(getV() * 2);
         }
         // set rotation of sprite and body to match gun barrel
@@ -44,10 +44,6 @@ public class ProjectileEntity extends Entity {
         startPos.y = (source.getBody().getPosition().y + spawnDistance * MathUtils.sinDeg(source.getGunRotation() + 90));
         return startPos;
     } // getStartPos
-
-    private void collision(){
-        System.out.println("collision");
-    } // collision
 
     /**
      * Checks for collisions with tanks and inflict damage on impact. Also removes projectile if it

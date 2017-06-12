@@ -18,7 +18,7 @@ public class EffectEntity extends Entity{
         treadMark
     }
 
-    public EffectEntity(float x, float y, GameMap gameMap, EffectType effectType, int duration) {
+    public EffectEntity(float x, float y, float rotation, GameMap gameMap, EffectType effectType, int duration) {
 
         // call Entity constructor
         super(x, y, 0, gameMap);
@@ -34,20 +34,35 @@ public class EffectEntity extends Entity{
         switch (effectType) {
             case smoke:
                 setSprite(new Sprite(new Texture("Kenney/Smoke/smokeGrey0.png")));
+
+                // set sprite position
+                getSprite().setPosition(getX(), getY());
                 break;
             case treadMark:
                 setSprite(new Sprite(new Texture("Kenney/Tanks/tracksSmallSingle.png")));
+
+                // set rotation origin to the center of the sprite image
+                getSprite().setOriginCenter();
+
+                // set sprite position (tank tread sprite is shorter than tank sprite so Y is increased)
+                getSprite().setPosition(getX(), getY() + 30);
+                break;
         }
 
-        // set sprite position
-        getSprite().setPosition(getX(), getY());
-    }
+        // apply source rotation
+        setRotation(rotation);
+    } // EffectEntity constructor
 
     public void update (){
 
         // mark used if effect has lived for its entire duration
-        if (timeCreated + duration > System.currentTimeMillis()){
+        if (timeCreated + duration < System.currentTimeMillis()){
             used = true;
+
+        // otherwise lower opacity as effect ages
+        } else {
+            float age = System.currentTimeMillis() - timeCreated;
+            getSprite().setAlpha(1 - age / duration);
         }
     }
 

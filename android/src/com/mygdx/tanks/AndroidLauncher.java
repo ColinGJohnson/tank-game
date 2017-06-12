@@ -15,6 +15,7 @@ public class AndroidLauncher extends AndroidApplication {
 		// start android application
 		super.onCreate(savedInstanceState);
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+        config.useImmersiveMode = true;
 		initialize(new TankGame(), config);
 	}
 }

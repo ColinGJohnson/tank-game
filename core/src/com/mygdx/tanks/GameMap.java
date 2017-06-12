@@ -87,8 +87,12 @@ public class GameMap {
             bot.update();
             if (bot.isDestroyed()){
 
-                // add a smoke effect
-                effects.add(new EffectEntity(bot.getX(), bot.getY(), this, EffectEntity.EffectType.smoke, 500));
+                // add a smoke effect that lasts for 250 milliseconds
+                effects.add(new EffectEntity(bot.getX(), bot.getY(), bot.getRotation(), this, EffectEntity.EffectType.smoke, 500));
+
+                // add to score
+                playerTank.addScore(10);
+                System.out.println(playerTank.getScore());
 
                 // remove this bot's box2D body
                 world.destroyBody(bot.getBody());
@@ -112,6 +116,17 @@ public class GameMap {
             }
         }
         projectiles.removeAll(garbage);
+
+        // update entites and remove all expired ones
+        for (EffectEntity effectEntity: effects) {
+            effectEntity.update();
+            if (effectEntity.isUsed()){
+
+                // add the projectile to the garbage list to be removed
+                garbage.add(effectEntity);
+            }
+        }
+        effects.removeAll(garbage);
 
         // add a new bot if enough time has passed and there aren't already too many in play
         if (System.currentTimeMillis() > lastBotSpawn + Constants.SPAWN_DELAY
@@ -200,18 +215,14 @@ public class GameMap {
     } // PolygonShape
 
     private void addSpawns(Map map){
-        System.out.println("spawn!");
         MapObjects objects = map.getLayers().get("Bots").getObjects();
-        System.out.println(objects.getCount());
         for(MapObject object : objects) {
-            System.out.println("spawn");
             float xPos = ((RectangleMapObject) object).getRectangle().getX();
             float yPos = ((RectangleMapObject) object).getRectangle().getY();
             float width = ((RectangleMapObject) object).getRectangle().getWidth();
             float height = ((RectangleMapObject) object).getRectangle().getHeight();
             botSpawns.add(new Vector2(xPos + width * 0.5f, yPos + height * 0.5f));
         }
-        System.out.println(botSpawns);
     } // addSpawns
 
     public World getWorld() {

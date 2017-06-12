@@ -25,7 +25,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.tanks.TankGame;
 
 /**
@@ -59,7 +61,7 @@ public class MenuScreen implements Screen, InputProcessor {
         skin = new Skin(Gdx.files.internal("kenneyUISkin.json"));
 
         // define the Stage that will be used to handle the user interface
-        stage = new Stage(new ExtendViewport(1280, 720));
+        stage = new Stage(new ScreenViewport());
 
         // create a new table for layout
         table = new Table();
@@ -83,9 +85,6 @@ public class MenuScreen implements Screen, InputProcessor {
         credit = new Label("Code by colin johnson, 2017", skin, "credits");
         credit2 = new Label("Graphics and music by Kenney Vleugels and Kevin Macleod", skin, "credits");
 
-        // add padding before the UI
-        table.padTop(200);
-
         // tankGame reference for inner click event class below
         final TankGame tankGame = game;
 
@@ -108,6 +107,8 @@ public class MenuScreen implements Screen, InputProcessor {
                 Gdx.app.exit();
             }
         });
+
+        table.padTop(200);
 
         // add the title label to the table layout and add spacing below it
         table.add(title).padBottom(10);
@@ -185,7 +186,7 @@ public class MenuScreen implements Screen, InputProcessor {
 
     @Override
     public void resize(int width, int height) {
-
+        stage.getViewport().update(width, height, true);
     } // resize
 
     @Override
