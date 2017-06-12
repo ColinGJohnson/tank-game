@@ -13,6 +13,7 @@ public class TankGame extends Game {
 
     // logic
     private Game game;
+    private ScreenManager screenManager;
     private int highScore = 0;
 
     @Override
@@ -21,8 +22,11 @@ public class TankGame extends Game {
         // define game and game map
         game = this;
 
+        // create a new screenManager to handle menu/game transitions
+        screenManager = new ScreenManager(this);
+
         // start on menu screen
-        setScreen(new PlayScreen(this));
+        setScreen(screenManager.getScreens().get(ScreenManager.GameState.Menu));
     } // create
 
     /**
@@ -56,4 +60,8 @@ public class TankGame extends Game {
     public static PlatformResolver getPlatformResolver() {
         return platformResolver;
     } // getPlatformResolver
+
+    public ScreenManager getScreenManager() {
+        return screenManager;
+    }
 } // TankGame

@@ -1,6 +1,7 @@
 package com.mygdx.tanks.desktop;
 
 import com.mygdx.tanks.PlatformInput;
+import com.mygdx.tanks.PlatformRender;
 import com.mygdx.tanks.PlatformResolver;
 
 /**
@@ -8,6 +9,7 @@ import com.mygdx.tanks.PlatformResolver;
  */
 public class DesktopResolver implements PlatformResolver {
     PlatformInput desktopInput;
+    PlatformRender desktopRenderer;
 
     public DesktopResolver(){
         desktopInput = new DesktopInput();
@@ -16,5 +18,10 @@ public class DesktopResolver implements PlatformResolver {
     @Override
     public PlatformInput getPlatformInput() {
         return desktopInput;
+    }
+
+    @Override
+    public PlatformRender getPlatformRenderer() {
+        return desktopRenderer;
     }
 }

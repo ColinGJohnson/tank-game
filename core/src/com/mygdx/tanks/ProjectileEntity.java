@@ -22,9 +22,14 @@ public class ProjectileEntity extends Entity {
         super(0, 0, PROJECTILE_SPEED, gameMap);
         this.source = source;
 
-        // set sprite for this projectile
-        setSprite(new Sprite(new Texture("Kenney/Bullets/bulletSilverSilver.png")));
-
+        // set sprite and speed for this projectile
+        if (source instanceof BotTank) {
+            setSprite(new Sprite(new Texture("Kenney/Bullets/bulletSilverSilver.png")));
+            setV(getV() * 0.75f);
+        } else {
+            setSprite(new Sprite(new Texture("Kenney/Bullets/bulletBeige.png")));
+            setV(getV() * 2);
+        }
         // set rotation of sprite and body to match gun barrel
         setRotation(source.getGunRotation() + 90);
 

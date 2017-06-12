@@ -15,8 +15,8 @@ public class DesktopLauncher {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 1280;
 		config.height = 720;
-		config.fullscreen = true;
-		config.resizable = false;
+		config.fullscreen = false;
+		config.resizable = true;
 		config.title = "LibGDX Tank Game";
 
         // create new game instance with window configuration

@@ -6,4 +6,5 @@ package com.mygdx.tanks;
 
 public interface PlatformResolver {
     public PlatformInput getPlatformInput();
+    public PlatformRender getPlatformRenderer();
 }

@@ -91,11 +91,21 @@ public class PlayScreen implements Screen {
             botTank.getGunSprite().draw(batch);
         }
 
+        // draw smoke effects
+        for (EffectEntity effect : gameMap.getEffects()){
+            if (effect.getEffectType() == EffectEntity.EffectType.smoke){
+                effect.getSprite().draw(batch);
+            }
+        }
+
         // end drawing with SpriteBatch
         batch.end();
 
         // render box2d debug graphics
         if(Constants.DEBUG)box2DDebugRenderer.render(gameMap.getWorld(), camera.combined.scl(Constants.PPM));
+
+        // draw hud
+        //game.platformResolver.get
     } // render
 
     /**

@@ -5,13 +5,20 @@ package com.mygdx.tanks;
  */
 public class AndroidResolver implements PlatformResolver {
     PlatformInput androidInput;
+    PlatformRender androidRenderer;
 
     public AndroidResolver(){
         androidInput = new AndroidInput();
+        androidRenderer = new AndroidRender();
     }
 
     @Override
     public PlatformInput getPlatformInput() {
         return androidInput;
+    }
+
+    @Override
+    public PlatformRender getPlatformRenderer() {
+        return androidRenderer;
     }
 }

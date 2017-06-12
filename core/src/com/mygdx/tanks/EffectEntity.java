@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 public class EffectEntity extends Entity{
     private long timeCreated;
     private int duration;
+    private boolean used = false;
+    EffectType effectType;
 
     enum EffectType {
         smoke,
@@ -23,6 +25,7 @@ public class EffectEntity extends Entity{
 
         // init instance variables
         this.duration = duration;
+        this.effectType = effectType;
 
         // record time created
         timeCreated = System.currentTimeMillis();
@@ -35,10 +38,37 @@ public class EffectEntity extends Entity{
             case treadMark:
                 setSprite(new Sprite(new Texture("Kenney/Tanks/tracksSmallSingle.png")));
         }
+
+        // set sprite position
+        getSprite().setPosition(getX(), getY());
+    }
+
+    public void update (){
+
+        // mark used if effect has lived for its entire duration
+        if (timeCreated + duration > System.currentTimeMillis()){
+            used = true;
+        }
     }
 
     @Override
     public void defineBody() {
         /* NO PHYSICS NEEDED */
     }
-}
+
+    public EffectType getEffectType() {
+        return effectType;
+    }
+
+    public void setEffectType(EffectType effectType) {
+        this.effectType = effectType;
+    }
+
+    public boolean isUsed() {
+        return used;
+    }
+
+    public void setUsed(boolean used) {
+        this.used = used;
+    }
+} // EffectEntity

@@ -37,6 +37,7 @@ public class GameMap {
 
     private ArrayList<BotTank> bots = new ArrayList<BotTank>(); // computer controlled tanks on map
     private ArrayList<ProjectileEntity> projectiles = new ArrayList<ProjectileEntity>(); // projectiles
+    private ArrayList<EffectEntity> effects = new ArrayList<EffectEntity>();
     public PlayerTank playerTank; // reference to player tank object
 
     private long lastBotSpawn = 0;
@@ -77,7 +78,7 @@ public class GameMap {
 
         // check if the player has been destroyed
         if (playerTank.isDestroyed()){
-            System.exit(0);
+            //System.exit(0);
         }
 
         // update bots and remove dead ones
@@ -85,6 +86,9 @@ public class GameMap {
         for (BotTank bot : bots){
             bot.update();
             if (bot.isDestroyed()){
+
+                // add a smoke effect
+                effects.add(new EffectEntity(bot.getX(), bot.getY(), this, EffectEntity.EffectType.smoke, 500));
 
                 // remove this bot's box2D body
                 world.destroyBody(bot.getBody());
@@ -264,5 +268,13 @@ public class GameMap {
 
     public void setBotSpawns(ArrayList<Vector2> botSpawns) {
         this.botSpawns = botSpawns;
+    }
+
+    public ArrayList<EffectEntity> getEffects() {
+        return effects;
+    }
+
+    public void setEffects(ArrayList<EffectEntity> effects) {
+        this.effects = effects;
     }
 } // GameMap
