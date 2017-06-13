@@ -1,5 +1,7 @@
 package com.mygdx.tanks;
 
+import android.util.Log;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -45,15 +47,40 @@ public class AndroidRender implements PlatformRender {
         scoreLabel = new Label("Score: 0", hudSkin, "title");
         table.add(scoreLabel);
 
-
+        // create table for left on screen controls
         leftHudTable = new Table();
+
+        // alight left OSC to the bottom left of the screen
         leftHudTable.align(Align.bottomLeft);
+
+        // init the movement touch pad
         movementPad = new Touchpad(10, hudSkin);
-        leftHudTable.add(movementPad).pad(30);
+
+        // calculate desired width and height for on screen controls
+        float width = Gdx.graphics.getWidth()*0.25f;
+        float height = width / movementPad.getWidth() * movementPad.getHeight();
+
+        // add the movement touch pad
+        leftHudTable.add(movementPad).size(width, height).pad(40);
+
+        // create table for right on screen controls
+        rightHudTable = new Table();
+
+        rightHudTable.setWidth(hudStage.getWidth());
+
+        // alight left OSC to the bottom right of the screen
+        rightHudTable.align(Align.bottomRight);
+
+        // init the aiming touch pad
+        gunPad = new Touchpad(10, hudSkin);
+
+        // add the aiming touch pad
+        rightHudTable.add(gunPad).size(width, height).pad(40);
 
         // add table layouts to scene2d hud stage
         hudStage.addActor(table);
         hudStage.addActor(leftHudTable);
+        hudStage.addActor(rightHudTable);
     } // initPlatformHUD
 
     @Override
@@ -71,7 +98,7 @@ public class AndroidRender implements PlatformRender {
     @Override
     public void renderPlatformGameOver(Stage endStage, int score) {
 
-    }
+    } // renderPlatformGameOver
 
     @Override
     public void renderPlatformMenu() {
@@ -85,7 +112,14 @@ public class AndroidRender implements PlatformRender {
 
     @Override
     public float getPlatformZoom() {
-        //return (1280/Gdx.graphics.getWidth() * 2f);
-        return 1f;
+        return (1280f /Gdx.graphics.getWidth() * 2f);
+    } // getPlatformZoom
+
+    public Touchpad getMovementPad() {
+        return movementPad;
+    }
+
+    public Touchpad getGunPad() {
+        return gunPad;
     }
 }

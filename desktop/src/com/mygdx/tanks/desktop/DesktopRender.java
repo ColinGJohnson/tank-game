@@ -73,6 +73,6 @@ public class DesktopRender implements PlatformRender {
 
     @Override
     public float getPlatformZoom() {
-        return (Gdx.graphics.getWidth()/1280 * 2f);
+        return (Gdx.graphics.getWidth()/1280f * 2f);
     }
 }

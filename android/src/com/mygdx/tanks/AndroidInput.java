@@ -1,5 +1,7 @@
 package com.mygdx.tanks;
 
+import android.util.Log;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 
@@ -9,37 +11,52 @@ import com.badlogic.gdx.math.Vector2;
 public class AndroidInput implements PlatformInput {
 
     @Override
-    public boolean quit() {
+    public boolean quit(PlayScreen playScreen) {
         return false;
     }
 
     @Override
-    public boolean forward() {
+    public boolean forward(PlayScreen playScreen) {
+        if (((AndroidRender)playScreen.getGame().platformResolver.getPlatformRenderer()).getMovementPad().getKnobPercentY() > 0.3){
+            return true;
+        }
         return false;
     }
 
     @Override
-    public boolean back() {
+    public boolean back(PlayScreen playScreen) {
+        if (((AndroidRender)playScreen.getGame().platformResolver.getPlatformRenderer()).getMovementPad().getKnobPercentY() < -0.3){
+            return true;
+        }
         return false;
     }
 
     @Override
-    public boolean left() {
+    public boolean left(PlayScreen playScreen) {
+        if (((AndroidRender)playScreen.getGame().platformResolver.getPlatformRenderer()).getMovementPad().getKnobPercentX() < -0.2){
+            return true;
+        }
         return false;
     }
 
     @Override
-    public boolean right() {
+    public boolean right(PlayScreen playScreen) {
+        if (((AndroidRender)playScreen.getGame().platformResolver.getPlatformRenderer()).getMovementPad().getKnobPercentX() > 0.2){
+            return true;
+        }
         return false;
     }
 
     @Override
-    public boolean shoot() {
-        return false;
+    public boolean shoot(PlayScreen playScreen) {
+
+        // tank is continually shooting on mobile
+        return true;
     }
 
     @Override
-    public Vector2 target() {
-        return new Vector2(Gdx.input.getX(), Gdx.input.getY());
+    public Vector2 target(PlayScreen playScreen) {
+        return new Vector2((Gdx.graphics.getWidth()/2f) + (200*((AndroidRender)playScreen.getGame().platformResolver.getPlatformRenderer()).getGunPad().getKnobPercentX()),
+                (Gdx.graphics.getHeight()/2f) - (200*((AndroidRender)playScreen.getGame().platformResolver.getPlatformRenderer()).getGunPad().getKnobPercentY()));
     }
 }

@@ -1,5 +1,6 @@
 package com.mygdx.tanks;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
@@ -70,6 +71,7 @@ public class PlayScreen implements Screen, InputProcessor {
 
         // define the Stage that will be used to handle the user interface
         hudStage = new Stage(new ScreenViewport());
+        hudStage = new Stage();
 
         // create reference to renderer appropriate for the current platform hud
         final PlatformRender render = game.platformResolver.getPlatformRenderer();
@@ -104,10 +106,12 @@ public class PlayScreen implements Screen, InputProcessor {
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
 
-        // draw tank trail effects
-        for (EffectEntity effect : gameMap.getEffects()){
-            if (effect.getEffectType() == EffectEntity.EffectType.treadMark){
-                effect.getSprite().draw(batch);
+        // draw tank trail effects if on desktop (too slow for mobile)
+        if(Gdx.app.getType() == Application.ApplicationType.Desktop){
+            for (EffectEntity effect : gameMap.getEffects()){
+                if (effect.getEffectType() == EffectEntity.EffectType.treadMark){
+                    effect.getSprite().draw(batch);
+                }
             }
         }
 
@@ -164,14 +168,16 @@ public class PlayScreen implements Screen, InputProcessor {
         final PlatformInput input = game.platformResolver.getPlatformInput();
 
         // exit if requested
-        if (input.quit()){
+        if (input.quit(this)){
             Gdx.app.exit();
             System.exit(0);
         }
 
         // player input
-        Vector3 playerTarget = camera.unproject(new Vector3(input.target().x, input.target().y, 0));
-        gameMap.playerTank.moveTank(input.forward(), input.back(), input.left(), input.right(), input.shoot(), new Vector2(playerTarget.x, playerTarget.y));
+        Vector3 playerTarget = camera.unproject(new Vector3(input.target(this).x, input.target(this).y, 0));
+
+        // tank continually shoots if on mobile
+        gameMap.playerTank.moveTank(input.forward(this), input.back(this), input.left(this), input.right(this), input.shoot(this), new Vector2(playerTarget.x, playerTarget.y));
 
         // update camera
         camera.position.set(gameMap.playerTank.getX(), gameMap.playerTank.getY(), 0);
@@ -206,6 +212,14 @@ public class PlayScreen implements Screen, InputProcessor {
         batch.dispose();
         gameMap.getWorld().dispose();
     } // dispose
+
+    public TankGame getGame() {
+        return game;
+    }
+
+    public GameMap getGameMap() {
+        return gameMap;
+    }
 
     @Override
     public boolean keyDown(int keycode) {
@@ -246,4 +260,5 @@ public class PlayScreen implements Screen, InputProcessor {
     public boolean scrolled(int amount) {
         return false;
     }
+
 } // PlayScreen
