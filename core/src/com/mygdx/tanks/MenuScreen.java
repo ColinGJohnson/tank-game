@@ -138,11 +138,6 @@ public class MenuScreen implements Screen, InputProcessor {
         // add the second credits label to the table layout
         table.add(credit2);
 
-        float width = Gdx.graphics.getWidth()*0.5f;
-        float height = width / table.getWidth() * table.getHeight();
-        table.setWidth(width);
-        table.setHeight(height);
-
         // add the table layout to the scene
         stage.addActor(table);
 
