@@ -58,6 +58,7 @@ public class EffectEntity extends Entity{
         // mark used if effect has lived for its entire duration
         if (timeCreated + duration < System.currentTimeMillis()){
             used = true;
+            getSprite().getTexture().dispose();
 
         // otherwise lower opacity as effect ages
         } else {

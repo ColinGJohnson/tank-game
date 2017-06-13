@@ -96,6 +96,10 @@ public class GameMap {
                 // remove this bot's box2D body
                 world.destroyBody(bot.getBody());
 
+                // dispose sprite
+                bot.getGunSprite().getTexture().dispose();
+                bot.getSprite().getTexture().dispose();
+
                 // add the bot to the garbage list to be removed
                 garbage.add(bot);
             }

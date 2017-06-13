@@ -136,10 +136,10 @@ public class TankEntity extends Entity {
         }
 
         // place a tread effect on the map if the tank has travelled/rotated far enough
-        if (distanceTravelled > 0.5){
+        if (distanceTravelled > 1){
             distanceTravelled = 0;
             getGameMap().getEffects().add(new EffectEntity(getX(), getY(), getRotation(), getGameMap(), EffectEntity.EffectType.treadMark, 5000));
-        } else if (stationaryRotation > 3){
+        } else if (stationaryRotation > 4){
             stationaryRotation = 0;
             getGameMap().getEffects().add(new EffectEntity(getX(), getY(), getRotation(), getGameMap(), EffectEntity.EffectType.treadMark, 5000));
         }
