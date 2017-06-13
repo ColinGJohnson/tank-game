@@ -1,6 +1,7 @@
 package com.mygdx.tanks;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -10,8 +11,9 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-
-import java.util.Random;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 /**
  * Created by colin on 22-May-17.
@@ -25,10 +27,14 @@ public class PlayScreen implements Screen, InputProcessor {
 
     // graphics
     private SpriteBatch batch;
-    private SpriteBatch hudbatch;
     private OrthographicCamera camera; // orthographic (2D) camera to follow player
     private OrthogonalTiledMapRenderer tmxRenderer;
     private Box2DDebugRenderer box2DDebugRenderer;
+
+    // hud graphics
+    private SpriteBatch hudBatch;
+    Stage hudStage;
+    Skin hudSkin;
 
     public PlayScreen(TankGame game) {
         this.game = game;
@@ -45,19 +51,35 @@ public class PlayScreen implements Screen, InputProcessor {
         //camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera = new OrthographicCamera(1920, 1080);
         camera.setToOrtho(false, 1920, 1080);
-        camera.zoom = 2f;
+        camera.zoom = game.platformResolver.getPlatformRenderer().getPlatformZoom();
 
         // renderers to draw .tmx map files and Box2D world
         tmxRenderer = new OrthogonalTiledMapRenderer(gameMap.getTiledMap());
         tmxRenderer.setView(camera);
         box2DDebugRenderer = new Box2DDebugRenderer();
 
-        // sprite batch for drawing textures
+        // initialize sprite batch for drawing textures
         batch = new SpriteBatch();
         batch.setProjectionMatrix(camera.combined);
 
+        // initialize sprite batch for drawing hud
+        hudBatch = new SpriteBatch();
+
+        // load user interface skin
+        hudSkin = new Skin(Gdx.files.internal("kenneyUISkin.json"));
+
+        // define the Stage that will be used to handle the user interface
+        hudStage = new Stage(new ScreenViewport());
+
+        // create reference to renderer appropriate for the current platform hud
+        final PlatformRender render = game.platformResolver.getPlatformRenderer();
+
+        // initialize platform hud stage
+        render.initPlatformHUD(hudStage, hudSkin);
+
         // set the input processor to this stage to stop the menu buttons from still working
-        Gdx.input.setInputProcessor(this);
+        InputMultiplexer inputMultiplexer = new InputMultiplexer(hudStage, this);
+        Gdx.input.setInputProcessor(inputMultiplexer);
     } // show
 
     @Override
@@ -114,13 +136,20 @@ public class PlayScreen implements Screen, InputProcessor {
         // end drawing with SpriteBatch
         batch.end();
 
+        // begin drawing hud
+        hudBatch.begin();
+
+        // create reference to renderer appropriate for the current platform hud
+        final PlatformRender render = game.platformResolver.getPlatformRenderer();
+
+        // render hud
+        render.renderPlatformHUD(hudStage, gameMap.getPlayerTank().getScore());
+
+        // end drawing hud
+        hudBatch.end();
+
         // render box2d debug graphics
         if(Constants.DEBUG)box2DDebugRenderer.render(gameMap.getWorld(), camera.combined.scl(Constants.PPM));
-
-        // draw hud
-        // create reference to an input handler appropriate for the current platform
-        //final PlatformRender render = game.platformResolver.getPlatformRenderer();
-        //render.renderPlatformHUD();
     } // render
 
     /**

@@ -92,7 +92,6 @@ public class GameMap {
 
                 // add to score
                 playerTank.addScore(10);
-                System.out.println(playerTank.getScore());
 
                 // remove this bot's box2D body
                 world.destroyBody(bot.getBody());

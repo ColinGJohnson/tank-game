@@ -15,6 +15,7 @@ public class DesktopResolver implements PlatformResolver {
 
     public DesktopResolver(){
         desktopInput = new DesktopInput();
+        desktopRenderer = new DesktopRender();
     }
 
     @Override

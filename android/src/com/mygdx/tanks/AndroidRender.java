@@ -1,11 +1,13 @@
 package com.mygdx.tanks;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
+import com.badlogic.gdx.utils.Align;
 
 /**
  * Created by Colin on 2017-05-17.
@@ -13,47 +15,77 @@ import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 
 public class AndroidRender implements PlatformRender {
 
-    private OrthographicCamera camera;
-    private Stage stage;
-    private SpriteBatch batch;
-    private Touchpad touchpad;
-    private Skin skin;
-    private float blockSpeed;
+    // hud
+    private Table table;
+    private Label scoreLabel;
 
-    public AndroidRender() {
-        batch = new SpriteBatch();
-        //Create camera
-        float aspectRatio = (float) Gdx.graphics.getWidth() / (float) Gdx.graphics.getHeight();
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, 10f*aspectRatio, 10f);
-
-        // load user interface skin
-        skin = new Skin(Gdx.files.internal("kenneyUISkin.json"));
-
-        //Create new TouchPad with the created style
-        touchpad = new Touchpad(10, skin);
-        //setBounds(x,y,width,height)
-        touchpad.setBounds(15, 15, 200, 200);
-
-        //Create a Stage and add TouchPad
-        stage = new Stage();
-        stage.addActor(touchpad);
-        Gdx.input.setInputProcessor(stage);
-    }
+    // On screen controls
+    private Table leftHudTable;
+    private Table rightHudTable;
+    private Touchpad movementPad;
+    private Touchpad gunPad;
+    private Button fireButton;
 
     @Override
-    public void renderPlatformHUD() {
-        stage.act(Gdx.graphics.getDeltaTime());
-        stage.draw();
+    public void initPlatformHUD(Stage hudStage, Skin hudSkin) {
+
+        // create a new table for layout
+        table = new Table();
+
+        // set the width of the layout table to the width of the screen
+        table.setWidth(hudStage.getWidth());
+
+        // align the table's contents in the center
+        table.align(Align.center|Align.top);
+
+        // position table relative to top left corner of screen
+        table.setPosition(0, Gdx.graphics.getHeight());
+
+        // create and add label for game score
+        scoreLabel = new Label("Score: 0", hudSkin, "title");
+        table.add(scoreLabel);
+
+
+        leftHudTable = new Table();
+        leftHudTable.align(Align.bottomLeft);
+        movementPad = new Touchpad(10, hudSkin);
+        leftHudTable.add(movementPad).pad(30);
+
+        // add table layouts to scene2d hud stage
+        hudStage.addActor(table);
+        hudStage.addActor(leftHudTable);
+    } // initPlatformHUD
+
+    @Override
+    public void renderPlatformHUD(Stage hudStage, int score) {
+
+        scoreLabel.setText("Score: " + score);
+
+        // update logic
+        hudStage.act(Gdx.graphics.getDeltaTime());
+
+        // draw elements
+        hudStage.draw();
+    } // renderPlatformHUD
+
+    @Override
+    public void renderPlatformGameOver(Stage endStage, int score) {
+
     }
 
     @Override
     public void renderPlatformMenu() {
 
-    }
+    } // renderPlatformMenu
 
     @Override
     public void renderPlatformPause() {
 
+    } // renderPlatformPause
+
+    @Override
+    public float getPlatformZoom() {
+        //return (1280/Gdx.graphics.getWidth() * 2f);
+        return 1f;
     }
 }

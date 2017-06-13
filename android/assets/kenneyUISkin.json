@@ -107,6 +107,9 @@ com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
 		down: yellow_button05
 		over: yellow_button01
 	}
+	fire: {
+		up: transparentDark47
+	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
 	default: {
