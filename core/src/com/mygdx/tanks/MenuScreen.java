@@ -172,18 +172,11 @@ public class MenuScreen implements Screen, InputProcessor {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         // update menu logic
-        update();
+        stage.act(Gdx.graphics.getDeltaTime());
 
         // draw menu elements
         stage.draw();
     } // render
-
-    private void update(){
-
-        // update the menu stage
-        stage.act(Gdx.graphics.getDeltaTime());
-    } // update
-
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);

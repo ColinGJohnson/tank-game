@@ -1,5 +1,7 @@
 package com.mygdx.tanks.desktop;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.tanks.PlatformInput;
 import com.mygdx.tanks.PlatformRender;
 import com.mygdx.tanks.PlatformResolver;

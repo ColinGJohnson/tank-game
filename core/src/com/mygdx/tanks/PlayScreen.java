@@ -25,6 +25,7 @@ public class PlayScreen implements Screen, InputProcessor {
 
     // graphics
     private SpriteBatch batch;
+    private SpriteBatch hudbatch;
     private OrthographicCamera camera; // orthographic (2D) camera to follow player
     private OrthogonalTiledMapRenderer tmxRenderer;
     private Box2DDebugRenderer box2DDebugRenderer;
@@ -70,7 +71,7 @@ public class PlayScreen implements Screen, InputProcessor {
         update(Gdx.graphics.getDeltaTime());
 
         // clear entire screen with flat 50% grey
-        Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 1);
+        Gdx.gl.glClearColor(0.74f, 0.53f, 0.34f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         // draw map tiles
@@ -118,8 +119,8 @@ public class PlayScreen implements Screen, InputProcessor {
 
         // draw hud
         // create reference to an input handler appropriate for the current platform
-        final PlatformRender render = game.platformResolver.getPlatformRenderer();
-        render.renderPlatformHUD();
+        //final PlatformRender render = game.platformResolver.getPlatformRenderer();
+        //render.renderPlatformHUD();
     } // render
 
     /**
