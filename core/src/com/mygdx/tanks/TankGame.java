@@ -14,9 +14,6 @@ public class TankGame extends Game {
     @Override
     public void create () {
 
-        // define game and game map
-        game = this;
-
         // create a new screenManager to handle menu/game transitions
         screenManager = new ScreenManager(this);
 
