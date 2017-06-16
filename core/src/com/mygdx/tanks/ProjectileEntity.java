@@ -24,10 +24,10 @@ public class ProjectileEntity extends Entity {
 
         // set sprite and speed for this projectile
         if (source instanceof BotTank) {
-            setSprite(new Sprite(new Texture("Kenney/Bullets/bulletSilverSilver.png")));
+            setSprite(new Sprite(new Texture("bulletSilverSilver.png")));
             setV(getV() * 0.75f);
         } else {
-            setSprite(new Sprite(new Texture("Kenney/Bullets/bulletYellow.png")));
+            setSprite(new Sprite(new Texture("bulletYellow.png")));
             setV(getV() * 2);
         }
         // set rotation of sprite and body to match gun barrel

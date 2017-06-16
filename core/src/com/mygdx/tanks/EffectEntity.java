@@ -33,13 +33,13 @@ public class EffectEntity extends Entity{
         // select correct sprite
         switch (effectType) {
             case smoke:
-                setSprite(new Sprite(new Texture("Kenney/Smoke/smokeGrey0.png")));
+                setSprite(new Sprite(new Texture("smokeGrey0.png")));
 
                 // set sprite position
                 getSprite().setPosition(getX(), getY());
                 break;
             case treadMark:
-                setSprite(new Sprite(new Texture("Kenney/Tanks/tracksSmallSingle.png")));
+                setSprite(new Sprite(new Texture("tracksSmallSingle.png")));
 
                 // set rotation origin to the center of the sprite image
                 getSprite().setOriginCenter();

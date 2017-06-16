@@ -216,28 +216,28 @@ public class TankEntity extends Entity {
 
         switch (tankColor) {
             case beige:
-                setGunSprite(new Sprite(new Texture("Kenney/Tanks/barrelBeige.png")));
-                setSprite(new Sprite(new Texture("Kenney/Tanks/tankBeige.png")));
+                setGunSprite(new Sprite(new Texture("barrelBeige.png")));
+                setSprite(new Sprite(new Texture("tankBeige.png")));
                 break;
             case black:
-                setGunSprite(new Sprite(new Texture("Kenney/Tanks/barrelBlack.png")));
-                setSprite(new Sprite(new Texture("Kenney/Tanks/tankBlack.png")));
+                setGunSprite(new Sprite(new Texture("barrelBlack.png")));
+                setSprite(new Sprite(new Texture("tankBlack.png")));
                 break;
             case blue:
-                setGunSprite(new Sprite(new Texture("Kenney/Tanks/barrelBlue.png")));
-                setSprite(new Sprite(new Texture("Kenney/Tanks/tankBlue.png")));
+                setGunSprite(new Sprite(new Texture("barrelBlue.png")));
+                setSprite(new Sprite(new Texture("tankBlue.png")));
                 break;
             case green:
-                setGunSprite(new Sprite(new Texture("Kenney/Tanks/barrelGreen.png")));
-                setSprite(new Sprite(new Texture("Kenney/Tanks/tankGreen.png")));
+                setGunSprite(new Sprite(new Texture("barrelGreen.png")));
+                setSprite(new Sprite(new Texture("tankGreen.png")));
                 break;
             case red:
-                setGunSprite(new Sprite(new Texture("Kenney/Tanks/barrelRed.png")));
-                setSprite(new Sprite(new Texture("Kenney/Tanks/tankRed.png")));
+                setGunSprite(new Sprite(new Texture("barrelRed.png")));
+                setSprite(new Sprite(new Texture("tankRed.png")));
                 break;
             default:
-                setGunSprite(new Sprite(new Texture("Kenney/Tanks/barrelBeige.png")));
-                setSprite(new Sprite(new Texture("Kenney/Tanks/tankBeige.png")));
+                setGunSprite(new Sprite(new Texture("barrelBeige.png")));
+                setSprite(new Sprite(new Texture("tankBeige.png")));
                 break;
         }
     } // setTankColor
