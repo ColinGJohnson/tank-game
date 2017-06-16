@@ -8,13 +8,8 @@ public class TankGame extends Game {
     // cross-platform
     public static PlatformResolver platformResolver = null;
 
-    // assets
-    AssetManager assets = new AssetManager();
-
     // logic
-    private Game game;
     private ScreenManager screenManager;
-    private int highScore = 0;
 
     @Override
     public void create () {
